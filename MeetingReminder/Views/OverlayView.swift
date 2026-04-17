@@ -7,6 +7,7 @@ struct OverlayView: View {
     let onJoin: () -> Void
 
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
     @State private var countdown: String = ""
     @State private var timer: Timer?
@@ -20,10 +21,11 @@ struct OverlayView: View {
             VStack(spacing: 24) {
                 Spacer()
 
-                // Calendar icon
+                // Calendar icon (decorative)
                 Image(systemName: "calendar.badge.clock")
                     .font(.system(size: 64))
                     .foregroundColor(.white.opacity(0.8))
+                    .accessibilityHidden(true)
 
                 // Meeting title
                 Text(event.title)
@@ -34,7 +36,7 @@ struct OverlayView: View {
 
                 // Time info
                 Text(countdown)
-                    .font(.system(size: 28, weight: .medium))
+                    .font(.system(size: 28, weight: .medium).monospacedDigit())
                     .foregroundColor(.white.opacity(0.8))
 
                 Text(event.formattedStartTime)
@@ -44,7 +46,7 @@ struct OverlayView: View {
                 // Calendar name
                 Text(event.calendar)
                     .font(.system(size: 16))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(.white.opacity(0.65))
                     .padding(.top, -8)
 
                 Spacer()
@@ -61,10 +63,10 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 16)
-                            .background(Color.green)
-                            .cornerRadius(12)
+                            .background(Color(red: 0.13, green: 0.70, blue: 0.42))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(OverlayButtonStyle())
                         .keyboardShortcut(.return, modifiers: [])
                     }
 
@@ -78,9 +80,9 @@ struct OverlayView: View {
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)
                         .background(Color.white.opacity(0.2))
-                        .cornerRadius(12)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(OverlayButtonStyle())
 
                     Button(action: onDismiss) {
                         HStack(spacing: 8) {
@@ -92,9 +94,9 @@ struct OverlayView: View {
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)
                         .background(Color.white.opacity(0.2))
-                        .cornerRadius(12)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(OverlayButtonStyle())
                     .keyboardShortcut(.escape, modifiers: [])
                 }
 
@@ -106,7 +108,10 @@ struct OverlayView: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            withAnimation(.easeOut(duration: 0.3)) {
+            let animation: Animation? = reduceMotion
+                ? nil
+                : .spring(response: 0.45, dampingFraction: 0.75)
+            withAnimation(animation) {
                 appeared = true
             }
             updateCountdown()
@@ -146,5 +151,14 @@ struct OverlayView: View {
                 countdown = "Starting in \(minutes)m \(remainingSeconds)s"
             }
         }
+    }
+}
+
+private struct OverlayButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .opacity(configuration.isPressed ? 0.8 : 1.0)
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }
