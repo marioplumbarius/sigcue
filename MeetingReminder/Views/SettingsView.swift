@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage("soundEnabled") private var soundEnabled: Bool = true
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
     @ObservedObject var calendarService: CalendarService
+    @ObservedObject var meetingMonitor: MeetingMonitor
 
     @State private var launchAtLogin = false
     @State private var enabledCalendarIDs: Set<String> = []
@@ -56,6 +57,14 @@ struct SettingsView: View {
                     .onChange(of: launchAtLogin) { newValue in
                         setLaunchAtLogin(newValue)
                     }
+            }
+
+            Section {
+                Button {
+                    meetingMonitor.previewOverlay()
+                } label: {
+                    Label("Preview overlay", systemImage: "play.circle")
+                }
             }
 
             Section {
