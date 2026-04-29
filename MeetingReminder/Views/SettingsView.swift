@@ -5,6 +5,7 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("reminderMinutes") private var reminderMinutes: Int = 5
     @AppStorage("soundEnabled") private var soundEnabled: Bool = true
+    @AppStorage("requireAction") private var requireAction: Bool = false
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
@@ -52,6 +53,7 @@ struct SettingsView: View {
 
             Section {
                 Toggle("Play sound with reminder", isOn: $soundEnabled)
+                Toggle("Require action (hide Snooze button)", isOn: $requireAction)
             }
 
             Section("Snooze options") {

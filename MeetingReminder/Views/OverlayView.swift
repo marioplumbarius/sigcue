@@ -7,6 +7,7 @@ struct OverlayView: View {
     let onJoin: () -> Void
 
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
+    @AppStorage("requireAction") private var requireAction: Bool = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
     @State private var countdown: String = ""
@@ -71,6 +72,23 @@ struct OverlayView: View {
                         .keyboardShortcut(.return, modifiers: [])
                     }
 
+
+                    if !requireAction {
+                        Button(action: onSnooze) {
+                            HStack(spacing: 8) {
+                                Image(systemName: "clock.arrow.circlepath")
+                                Text("Snooze 1 min")
+                            }
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 24)
+                            .padding(.vertical, 14)
+                            .background(Color.white.opacity(0.2))
+                            .cornerRadius(12)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
                     Menu {
                         ForEach(snoozeOptions, id: \.self) { minutes in
                             Button(snoozeLabel(minutes: minutes)) {
@@ -94,6 +112,7 @@ struct OverlayView: View {
                     .menuStyle(.borderlessButton)
                     .fixedSize()
                     .buttonStyle(OverlayButtonStyle())
+
 
                     Button(action: onDismiss) {
                         HStack(spacing: 8) {

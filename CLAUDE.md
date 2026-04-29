@@ -54,6 +54,7 @@ MeetingReminder/
 | `reminderMinutes` | Int | 5 | Minutes before meeting to show overlay |
 | `soundEnabled` | Bool | true | Play alert sound with overlay |
 | `overlayBackground` | String | "dark" | Background style (dark/blue/purple/gradient/red/green/nightOcean/electric/cyber) |
+| `requireAction` | Bool | false | Hide Snooze button, forcing Join or Dismiss |
 | `enabledCalendarIDs` | [String] | [] | Calendar IDs to monitor (empty = all) |
 
 ## Icon Generation

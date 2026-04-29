@@ -3,7 +3,7 @@ import EventKit
 import Foundation
 
 @MainActor
-final class CalendarService: ObservableObject {
+final class CalendarService: ObservableObject, CalendarServiceProtocol {
     @Published var events: [MeetingEvent] = []
     @Published var authorizationStatus: EKAuthorizationStatus = .notDetermined
     @Published var availableCalendars: [EKCalendar] = []

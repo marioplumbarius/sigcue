@@ -21,7 +21,8 @@
 		T2000002 /* MeetingEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000002 /* MeetingEventTests.swift */; };
 		T2000003 /* OverlayBackgroundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000003 /* OverlayBackgroundTests.swift */; };
 		T2000004 /* ClampedExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000004 /* ClampedExtensionTests.swift */; };
-		T2000005 /* MeetingMonitorPreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000005 /* MeetingMonitorPreviewTests.swift */; };
+		T2000005 /* MeetingMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000005 /* MeetingMonitorTests.swift */; };
+		T2000006 /* MeetingMonitorPreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000006 /* MeetingMonitorPreviewTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,7 +53,8 @@
 		T1000002 /* MeetingEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingEventTests.swift; sourceTree = "<group>"; };
 		T1000003 /* OverlayBackgroundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayBackgroundTests.swift; sourceTree = "<group>"; };
 		T1000004 /* ClampedExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClampedExtensionTests.swift; sourceTree = "<group>"; };
-		T1000005 /* MeetingMonitorPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingMonitorPreviewTests.swift; sourceTree = "<group>"; };
+		T1000005 /* MeetingMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingMonitorTests.swift; sourceTree = "<group>"; };
+		T1000006 /* MeetingMonitorPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingMonitorPreviewTests.swift; sourceTree = "<group>"; };
 		T3000001 /* MeetingReminderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeetingReminderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -150,7 +152,8 @@
 				T1000002 /* MeetingEventTests.swift */,
 				T1000003 /* OverlayBackgroundTests.swift */,
 				T1000004 /* ClampedExtensionTests.swift */,
-				T1000005 /* MeetingMonitorPreviewTests.swift */,
+				T1000005 /* MeetingMonitorTests.swift */,
+				T1000006 /* MeetingMonitorPreviewTests.swift */,
 			);
 			path = MeetingReminderTests;
 			sourceTree = "<group>";
@@ -257,7 +260,8 @@
 				T2000002 /* MeetingEventTests.swift in Sources */,
 				T2000003 /* OverlayBackgroundTests.swift in Sources */,
 				T2000004 /* ClampedExtensionTests.swift in Sources */,
-				T2000005 /* MeetingMonitorPreviewTests.swift in Sources */,
+				T2000005 /* MeetingMonitorTests.swift in Sources */,
+				T2000006 /* MeetingMonitorPreviewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

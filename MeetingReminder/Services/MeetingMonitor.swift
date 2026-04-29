@@ -3,11 +3,16 @@ import Combine
 import Foundation
 
 @MainActor
+protocol CalendarServiceProtocol: AnyObject {
+    var events: [MeetingEvent] { get }
+}
+
+@MainActor
 final class MeetingMonitor: ObservableObject {
     @Published var activeOverlayEvent: MeetingEvent?
     @Published var shouldShowOverlay = false
 
-    private var calendarService: CalendarService
+    private var calendarService: any CalendarServiceProtocol
     private var checkTimer: Timer?
     private var shownEventIDs: Set<String> = []
     private var snoozedEvents: [String: Date] = [:]
@@ -18,7 +23,7 @@ final class MeetingMonitor: ObservableObject {
         UserDefaults.standard.integer(forKey: "reminderMinutes").clamped(to: 1...30, default: 5)
     }
 
-    init(calendarService: CalendarService) {
+    init(calendarService: any CalendarServiceProtocol) {
         self.calendarService = calendarService
     }
 
@@ -101,8 +106,8 @@ final class MeetingMonitor: ObservableObject {
                 return
             }
 
-            // Also trigger for events that just started (within 60 seconds)
-            if timeUntil <= 0 && timeUntil > -60 {
+            // Also trigger for events that are in progress (snoozed past start)
+            if timeUntil <= 0 && event.endDate > now {
                 triggerOverlay(for: event)
                 return
             }
