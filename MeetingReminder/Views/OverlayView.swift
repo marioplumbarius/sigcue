@@ -3,14 +3,16 @@ import SwiftUI
 struct OverlayView: View {
     let event: MeetingEvent
     let onDismiss: () -> Void
-    let onSnooze: () -> Void
+    let onSnooze: (Int) -> Void
     let onJoin: () -> Void
 
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
     @AppStorage("requireAction") private var requireAction: Bool = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
     @State private var countdown: String = ""
     @State private var timer: Timer?
+    @State private var snoozeOptions: [Int] = [1, 2, 5, 10]
 
     var body: some View {
         ZStack {
@@ -21,10 +23,11 @@ struct OverlayView: View {
             VStack(spacing: 24) {
                 Spacer()
 
-                // Calendar icon
+                // Calendar icon (decorative)
                 Image(systemName: "calendar.badge.clock")
                     .font(.system(size: 64))
                     .foregroundColor(.white.opacity(0.8))
+                    .accessibilityHidden(true)
 
                 // Meeting title
                 Text(event.title)
@@ -35,7 +38,7 @@ struct OverlayView: View {
 
                 // Time info
                 Text(countdown)
-                    .font(.system(size: 28, weight: .medium))
+                    .font(.system(size: 28, weight: .medium).monospacedDigit())
                     .foregroundColor(.white.opacity(0.8))
 
                 Text(event.formattedStartTime)
@@ -45,7 +48,7 @@ struct OverlayView: View {
                 // Calendar name
                 Text(event.calendar)
                     .font(.system(size: 16))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(.white.opacity(0.65))
                     .padding(.top, -8)
 
                 Spacer()
@@ -62,12 +65,13 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 16)
-                            .background(Color.green)
-                            .cornerRadius(12)
+                            .background(Color(red: 0.13, green: 0.70, blue: 0.42))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(OverlayButtonStyle())
                         .keyboardShortcut(.return, modifiers: [])
                     }
+
 
                     if !requireAction {
                         Button(action: onSnooze) {
@@ -85,6 +89,31 @@ struct OverlayView: View {
                         .buttonStyle(.plain)
                     }
 
+                    Menu {
+                        ForEach(snoozeOptions, id: \.self) { minutes in
+                            Button(snoozeLabel(minutes: minutes)) {
+                                onSnooze(minutes)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "clock.arrow.circlepath")
+                            Text("Snooze")
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.system(size: 11, weight: .medium))
+                        }
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 14)
+                        .background(Color.white.opacity(0.2))
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                    .menuStyle(.borderlessButton)
+                    .fixedSize()
+                    .buttonStyle(OverlayButtonStyle())
+
+
                     Button(action: onDismiss) {
                         HStack(spacing: 8) {
                             Image(systemName: "xmark")
@@ -95,9 +124,9 @@ struct OverlayView: View {
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)
                         .background(Color.white.opacity(0.2))
-                        .cornerRadius(12)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(OverlayButtonStyle())
                     .keyboardShortcut(.escape, modifiers: [])
                 }
 
@@ -109,9 +138,13 @@ struct OverlayView: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            withAnimation(.easeOut(duration: 0.3)) {
+            let animation: Animation? = reduceMotion
+                ? nil
+                : .spring(response: 0.45, dampingFraction: 0.75)
+            withAnimation(animation) {
                 appeared = true
             }
+            loadSnoozeOptions()
             updateCountdown()
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 Task { @MainActor in
@@ -134,6 +167,15 @@ struct OverlayView: View {
         return VideoLinkDetector.serviceName(for: url)
     }
 
+    private func snoozeLabel(minutes: Int) -> String {
+        minutes == 1 ? "1 minute" : "\(minutes) minutes"
+    }
+
+    private func loadSnoozeOptions() {
+        let stored = UserDefaults.standard.array(forKey: "snoozeOptions") as? [Int] ?? []
+        snoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : stored.sorted()
+    }
+
     private func updateCountdown() {
         let seconds = Int(event.startDate.timeIntervalSinceNow)
         if seconds <= 0 {
@@ -149,5 +191,14 @@ struct OverlayView: View {
                 countdown = "Starting in \(minutes)m \(remainingSeconds)s"
             }
         }
+    }
+}
+
+private struct OverlayButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
+            .opacity(configuration.isPressed ? 0.8 : 1.0)
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }
 }

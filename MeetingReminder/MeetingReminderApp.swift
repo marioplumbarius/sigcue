@@ -36,7 +36,7 @@ struct MeetingReminderApp: App {
         .menuBarExtraStyle(.window)
 
         Settings {
-            SettingsView(calendarService: calendarService)
+            SettingsView(calendarService: calendarService, meetingMonitor: meetingMonitor)
         }
     }
 }
@@ -60,7 +60,7 @@ final class OverlayCoordinator: ObservableObject {
                     windowController.show(
                         event: event,
                         onDismiss: { [weak self] in self?.monitor.dismiss() },
-                        onSnooze: { [weak self] in self?.monitor.snooze() },
+                        onSnooze: { [weak self] minutes in self?.monitor.snooze(minutes: minutes) },
                         onJoin: { [weak self] in self?.monitor.joinMeeting() }
                     )
                 } else {

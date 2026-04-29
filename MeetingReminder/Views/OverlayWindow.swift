@@ -5,7 +5,7 @@ final class OverlayWindowController {
     private var panels: [NSPanel] = []
 
     func show(event: MeetingEvent, onDismiss: @escaping () -> Void,
-              onSnooze: @escaping () -> Void, onJoin: @escaping () -> Void) {
+              onSnooze: @escaping (Int) -> Void, onJoin: @escaping () -> Void) {
         close()
 
         for screen in NSScreen.screens {
@@ -31,9 +31,9 @@ final class OverlayWindowController {
                     self?.close()
                     onDismiss()
                 },
-                onSnooze: { [weak self] in
+                onSnooze: { [weak self] minutes in
                     self?.close()
-                    onSnooze()
+                    onSnooze(minutes)
                 },
                 onJoin: { [weak self] in
                     self?.close()

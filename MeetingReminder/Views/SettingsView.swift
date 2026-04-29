@@ -8,9 +8,13 @@ struct SettingsView: View {
     @AppStorage("requireAction") private var requireAction: Bool = false
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
     @ObservedObject var calendarService: CalendarService
+    @ObservedObject var meetingMonitor: MeetingMonitor
 
     @State private var launchAtLogin = false
     @State private var enabledCalendarIDs: Set<String> = []
+    @State private var snoozeOptions: Set<Int> = [1, 2, 5, 10]
+
+    private let snoozeOptionCandidates = [1, 2, 5, 10, 15]
 
     var body: some View {
         TabView {
@@ -29,7 +33,7 @@ struct SettingsView: View {
                     Label("Calendars", systemImage: "calendar")
                 }
         }
-        .frame(width: 460, height: 380)
+        .frame(width: 460, height: 420)
         .onAppear {
             loadSettings()
         }
@@ -52,11 +56,25 @@ struct SettingsView: View {
                 Toggle("Require action (hide Snooze button)", isOn: $requireAction)
             }
 
+            Section("Snooze options") {
+                ForEach(snoozeOptionCandidates, id: \.self) { minutes in
+                    Toggle(snoozeLabel(minutes: minutes), isOn: snoozeBinding(for: minutes))
+                }
+            }
+
             Section {
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { newValue in
                         setLaunchAtLogin(newValue)
                     }
+            }
+
+            Section {
+                Button {
+                    meetingMonitor.previewOverlay()
+                } label: {
+                    Label("Preview overlay", systemImage: "play.circle")
+                }
             }
 
             Section {
@@ -91,16 +109,21 @@ struct SettingsView: View {
                         overlayBackground = bg.rawValue
                     } label: {
                         VStack(spacing: 6) {
-                            RoundedRectangle(cornerRadius: 8)
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .fill(bg.previewGradient)
-                                .frame(height: 70)
+                                .frame(height: 88)
                                 .overlay(
-                                    Text("Aa")
-                                        .font(.title2.bold())
-                                        .foregroundColor(.white)
+                                    VStack(spacing: 2) {
+                                        Text("Meeting")
+                                            .font(.system(size: 11, weight: .bold))
+                                        Text("in 3 min")
+                                            .font(.system(size: 9))
+                                            .opacity(0.75)
+                                    }
+                                    .foregroundColor(.white)
                                 )
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
                                         .stroke(overlayBackground == bg.rawValue ? Color.accentColor : Color.clear, lineWidth: 3)
                                 )
 
@@ -170,6 +193,36 @@ struct SettingsView: View {
         if #available(macOS 13.0, *) {
             launchAtLogin = SMAppService.mainApp.status == .enabled
         }
+
+        loadSnoozeOptions()
+    }
+
+    private func loadSnoozeOptions() {
+        let stored = UserDefaults.standard.array(forKey: "snoozeOptions") as? [Int] ?? []
+        snoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : Set(stored)
+    }
+
+    private func saveSnoozeOptions() {
+        UserDefaults.standard.set(Array(snoozeOptions).sorted(), forKey: "snoozeOptions")
+    }
+
+    private func snoozeBinding(for minutes: Int) -> Binding<Bool> {
+        Binding(
+            get: { snoozeOptions.contains(minutes) },
+            set: { enabled in
+                if enabled {
+                    snoozeOptions.insert(minutes)
+                } else {
+                    guard snoozeOptions.count > 1 else { return }
+                    snoozeOptions.remove(minutes)
+                }
+                saveSnoozeOptions()
+            }
+        )
+    }
+
+    private func snoozeLabel(minutes: Int) -> String {
+        minutes == 1 ? "1 minute" : "\(minutes) minutes"
     }
 
     private func saveCalendarSelection() {

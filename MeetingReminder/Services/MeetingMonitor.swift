@@ -55,6 +55,20 @@ final class MeetingMonitor: ObservableObject {
         dismiss()
     }
 
+    func previewOverlay() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-\(now.timeIntervalSince1970)",
+            title: "Example Meeting",
+            startDate: now.addingTimeInterval(2 * 60),
+            endDate: now.addingTimeInterval(62 * 60),
+            calendar: "Preview",
+            videoLink: URL(string: "https://zoom.us/j/00000000000")
+        )
+        activeOverlayEvent = event
+        shouldShowOverlay = true
+    }
+
     func joinMeeting() {
         guard let event = activeOverlayEvent, let url = event.videoLink else { return }
         NSWorkspace.shared.open(url)
