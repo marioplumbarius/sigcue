@@ -68,7 +68,7 @@ struct MenuBarView: View {
     }
 
     private var eventListSection: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 4) {
             Text("Upcoming Meetings")
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -77,7 +77,7 @@ struct MenuBarView: View {
             ForEach(upcomingEvents.prefix(5)) { event in
                 eventRow(event)
                 if event.id != upcomingEvents.prefix(5).last?.id {
-                    Divider().padding(.vertical, 2)
+                    Divider().padding(.vertical, 3)
                 }
             }
         }
@@ -117,14 +117,17 @@ struct MenuBarView: View {
                     NSWorkspace.shared.open(url)
                 } label: {
                     Image(systemName: "video.fill")
-                        .font(.system(size: 11))
+                        .font(.system(size: 12))
                         .foregroundColor(.accentColor)
+                        .frame(width: 28, height: 28)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.borderless)
                 .help("Join \(VideoLinkDetector.serviceName(for: url))")
+                .accessibilityLabel("Join \(VideoLinkDetector.serviceName(for: url))")
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
 
 }

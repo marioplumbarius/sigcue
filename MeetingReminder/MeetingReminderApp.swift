@@ -36,7 +36,7 @@ struct MeetingReminderApp: App {
         .menuBarExtraStyle(.window)
 
         Settings {
-            SettingsView(calendarService: calendarService)
+            SettingsView(calendarService: calendarService, meetingMonitor: meetingMonitor)
         }
     }
 }
