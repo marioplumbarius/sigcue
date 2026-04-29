@@ -3,7 +3,7 @@ import SwiftUI
 struct OverlayView: View {
     let event: MeetingEvent
     let onDismiss: () -> Void
-    let onSnooze: () -> Void
+    let onSnooze: (Int) -> Void
     let onJoin: () -> Void
 
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
@@ -11,6 +11,7 @@ struct OverlayView: View {
     @State private var appeared = false
     @State private var countdown: String = ""
     @State private var timer: Timer?
+    @State private var snoozeOptions: [Int] = [1, 2, 5, 10]
 
     var body: some View {
         ZStack {
@@ -70,10 +71,18 @@ struct OverlayView: View {
                         .keyboardShortcut(.return, modifiers: [])
                     }
 
-                    Button(action: onSnooze) {
+                    Menu {
+                        ForEach(snoozeOptions, id: \.self) { minutes in
+                            Button(snoozeLabel(minutes: minutes)) {
+                                onSnooze(minutes)
+                            }
+                        }
+                    } label: {
                         HStack(spacing: 8) {
                             Image(systemName: "clock.arrow.circlepath")
-                            Text("Snooze 1 min")
+                            Text("Snooze")
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.system(size: 11, weight: .medium))
                         }
                         .font(.system(size: 18, weight: .medium))
                         .foregroundColor(.white)
@@ -82,6 +91,8 @@ struct OverlayView: View {
                         .background(Color.white.opacity(0.2))
                         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
+                    .menuStyle(.borderlessButton)
+                    .fixedSize()
                     .buttonStyle(OverlayButtonStyle())
 
                     Button(action: onDismiss) {
@@ -114,6 +125,7 @@ struct OverlayView: View {
             withAnimation(animation) {
                 appeared = true
             }
+            loadSnoozeOptions()
             updateCountdown()
             timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
                 Task { @MainActor in
@@ -134,6 +146,15 @@ struct OverlayView: View {
     private var videoServiceName: String {
         guard let url = event.videoLink else { return "Meeting" }
         return VideoLinkDetector.serviceName(for: url)
+    }
+
+    private func snoozeLabel(minutes: Int) -> String {
+        minutes == 1 ? "1 minute" : "\(minutes) minutes"
+    }
+
+    private func loadSnoozeOptions() {
+        let stored = UserDefaults.standard.array(forKey: "snoozeOptions") as? [Int] ?? []
+        snoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : stored.sorted()
     }
 
     private func updateCountdown() {

@@ -11,6 +11,9 @@ struct SettingsView: View {
 
     @State private var launchAtLogin = false
     @State private var enabledCalendarIDs: Set<String> = []
+    @State private var snoozeOptions: Set<Int> = [1, 2, 5, 10]
+
+    private let snoozeOptionCandidates = [1, 2, 5, 10, 15]
 
     var body: some View {
         TabView {
@@ -29,8 +32,7 @@ struct SettingsView: View {
                     Label("Calendars", systemImage: "calendar")
                 }
         }
-        .frame(width: 460)
-        .frame(minHeight: 380)
+        .frame(width: 460, height: 420)
         .onAppear {
             loadSettings()
         }
@@ -50,6 +52,12 @@ struct SettingsView: View {
 
             Section {
                 Toggle("Play sound with reminder", isOn: $soundEnabled)
+            }
+
+            Section("Snooze options") {
+                ForEach(snoozeOptionCandidates, id: \.self) { minutes in
+                    Toggle(snoozeLabel(minutes: minutes), isOn: snoozeBinding(for: minutes))
+                }
             }
 
             Section {
@@ -183,6 +191,36 @@ struct SettingsView: View {
         if #available(macOS 13.0, *) {
             launchAtLogin = SMAppService.mainApp.status == .enabled
         }
+
+        loadSnoozeOptions()
+    }
+
+    private func loadSnoozeOptions() {
+        let stored = UserDefaults.standard.array(forKey: "snoozeOptions") as? [Int] ?? []
+        snoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : Set(stored)
+    }
+
+    private func saveSnoozeOptions() {
+        UserDefaults.standard.set(Array(snoozeOptions).sorted(), forKey: "snoozeOptions")
+    }
+
+    private func snoozeBinding(for minutes: Int) -> Binding<Bool> {
+        Binding(
+            get: { snoozeOptions.contains(minutes) },
+            set: { enabled in
+                if enabled {
+                    snoozeOptions.insert(minutes)
+                } else {
+                    guard snoozeOptions.count > 1 else { return }
+                    snoozeOptions.remove(minutes)
+                }
+                saveSnoozeOptions()
+            }
+        )
+    }
+
+    private func snoozeLabel(minutes: Int) -> String {
+        minutes == 1 ? "1 minute" : "\(minutes) minutes"
     }
 
     private func saveCalendarSelection() {
