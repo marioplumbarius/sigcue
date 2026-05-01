@@ -49,6 +49,15 @@ Inspired by <a href="https://www.inyourface.app">In Your Face</a>.
 
 ## Installation
 
+### Homebrew
+
+```bash
+brew tap nilBora/apps
+brew install --cask --no-quarantine meeting-reminder
+```
+
+> `--no-quarantine` bypasses the Gatekeeper warning for unsigned apps. Alternatively, right-click the app in Finder → **Open** the first time.
+
 ### Build from Source
 
 ```bash

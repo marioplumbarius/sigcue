@@ -27,6 +27,13 @@ cask "meeting-reminder" do
 
   app "MeetingReminder.app"
 
+  caveats <<~EOS
+    #{appdir}/MeetingReminder.app is not signed by Apple.
+    If macOS blocks the app, re-install with:
+      brew install --cask --no-quarantine meeting-reminder
+    Or right-click the app in Finder → Open the first time.
+  EOS
+
   zap trash: [
     "~/Library/Preferences/com.meetingreminder.app.plist",
     "~/Library/Caches/com.meetingreminder.app",
