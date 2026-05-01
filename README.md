@@ -53,10 +53,10 @@ Inspired by <a href="https://www.inyourface.app">In Your Face</a>.
 
 ```bash
 brew tap nilBora/apps
-brew install --cask --no-quarantine meeting-reminder
+brew install --cask meeting-reminder
 ```
 
-> `--no-quarantine` bypasses the Gatekeeper warning for unsigned apps. Alternatively, right-click the app in Finder → **Open** the first time.
+> The app is unsigned. The cask automatically removes the quarantine attribute after install so Gatekeeper will not block it.
 
 ### Build from Source
 
