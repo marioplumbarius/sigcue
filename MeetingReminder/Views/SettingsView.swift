@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage("soundEnabled") private var soundEnabled: Bool = true
     @AppStorage("requireAction") private var requireAction: Bool = false
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
+    @AppStorage("endReminderMinutes") private var endReminderMinutes: Int = 0
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
@@ -41,7 +42,7 @@ struct SettingsView: View {
 
     private var generalTab: some View {
         Form {
-            Section {
+            Section("Reminders") {
                 Picker("Remind me before meetings:", selection: $reminderMinutes) {
                     Text("1 minute").tag(1)
                     Text("2 minutes").tag(2)
@@ -49,6 +50,20 @@ struct SettingsView: View {
                     Text("10 minutes").tag(10)
                 }
                 .pickerStyle(.menu)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Picker("Remind me when meeting is about to end:", selection: $endReminderMinutes) {
+                        Text("Never").tag(0)
+                        Text("1 minute").tag(1)
+                        Text("2 minutes").tag(2)
+                        Text("5 minutes").tag(5)
+                        Text("10 minutes").tag(10)
+                    }
+                    .pickerStyle(.menu)
+                    Text("Skipped when another meeting starts back-to-back.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
             Section {

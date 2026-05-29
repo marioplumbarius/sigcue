@@ -13,6 +13,8 @@ final class MeetingMonitorTests: XCTestCase {
         UserDefaults.standard.set(false, forKey: "soundEnabled")
         // Use 5-minute reminder window
         UserDefaults.standard.set(5, forKey: "reminderMinutes")
+        // Disable end-reminder by default in tests (0 = Never)
+        UserDefaults.standard.set(0, forKey: "endReminderMinutes")
         return monitor
     }
 
@@ -117,6 +119,108 @@ final class MeetingMonitorTests: XCTestCase {
         // Calling start again (simulating the 30s timer) should not re-trigger
         monitor.start()
         XCTAssertFalse(monitor.shouldShowOverlay)
+    }
+
+    // MARK: - End-of-meeting reminder
+
+    func testEndReminderDisabledByDefault() {
+        // Event is in progress, 1 min from ending (within default 2-min end window)
+        let event = makeEvent(id: "e-end", startingIn: -29, duration: 30)
+        let monitor = makeMonitor(events: [event])
+        // shownEventIDs would block start-reminder retrigger; mark as already shown to isolate
+        monitor.start()
+        monitor.dismiss() // dismiss any start-reminder fired for in-progress event
+        monitor.start()
+        XCTAssertFalse(monitor.shouldShowOverlay,
+                       "End-reminder should be disabled by default")
+    }
+
+    func testEndReminderFiresWhenEnabledAndInWindow() {
+        // Event started 29 min ago, 30 min long → 1 min to end (inside 2-min window)
+        let event = makeEvent(id: "e-end", startingIn: -29, duration: 30)
+        let monitor = makeMonitor(events: [event])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.start()
+        // First in-progress start-reminder fires; user dismisses it
+        XCTAssertTrue(monitor.shouldShowOverlay)
+        XCTAssertEqual(monitor.activeOverlayKind, .start)
+        monitor.dismiss()
+
+        // Now next check should fire the end-reminder
+        monitor.start()
+        XCTAssertTrue(monitor.shouldShowOverlay)
+        XCTAssertEqual(monitor.activeOverlayKind, .ending)
+        XCTAssertEqual(monitor.activeOverlayEvent?.id, event.id)
+    }
+
+    func testEndReminderDoesNotFireOutsideWindow() {
+        // Event started 5 min ago, 30 min long → 25 min to end (outside 2-min window)
+        let event = makeEvent(id: "e-end", startingIn: -5, duration: 30)
+        let monitor = makeMonitor(events: [event])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.start()
+        monitor.dismiss() // dismiss start-reminder for in-progress event
+        monitor.start()
+        XCTAssertFalse(monitor.shouldShowOverlay)
+    }
+
+    func testEndReminderSuppressedWhenBackToBackMeeting() {
+        UserDefaults.standard.set(5, forKey: "reminderMinutes")
+        // Current: ends in 1 min. Next: starts in 3 min (pre-reminder window = 5 min,
+        // so 3 - 5 = -2 ≤ currentEnd ⇒ back-to-back, suppress end-reminder)
+        let current = makeEvent(id: "current", startingIn: -29, duration: 30)
+        let next = makeEvent(id: "next", startingIn: 3, duration: 30)
+        let monitor = makeMonitor(events: [current, next])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.start()
+        // In-progress `current` fires start-reminder first
+        monitor.dismiss()
+        monitor.start()
+        // Then upcoming `next` fires start-reminder
+        monitor.dismiss()
+        monitor.start()
+        // Now end-reminder for `current` should be suppressed (next is back-to-back)
+        XCTAssertFalse(monitor.shouldShowOverlay,
+                       "End-reminder should be suppressed when next meeting starts within pre-reminder window")
+    }
+
+    func testEndReminderAcknowledgeDoesNotRetrigger() {
+        let event = makeEvent(id: "e-end", startingIn: -29, duration: 30)
+        let monitor = makeMonitor(events: [event])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.start()
+        monitor.dismiss() // dismiss start-reminder
+        monitor.start()
+        XCTAssertEqual(monitor.activeOverlayKind, .ending)
+        monitor.dismiss() // acknowledge end-reminder
+        monitor.start()
+        XCTAssertFalse(monitor.shouldShowOverlay,
+                       "Acknowledged end-reminder should not re-fire")
+    }
+
+    func testEndReminderSnoozeClearsOverlayAndRemovesFromShown() {
+        let event = makeEvent(id: "e-end", startingIn: -29, duration: 30)
+        let monitor = makeMonitor(events: [event])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.start()
+        monitor.dismiss() // dismiss start
+        monitor.start()
+        XCTAssertEqual(monitor.activeOverlayKind, .ending)
+        monitor.snooze(minutes: 1)
+        XCTAssertFalse(monitor.shouldShowOverlay)
+        XCTAssertNil(monitor.activeOverlayEvent)
+    }
+
+    func testEndReminderResetsOverlayKindOnDismiss() {
+        let event = makeEvent(id: "e-end", startingIn: -29, duration: 30)
+        let monitor = makeMonitor(events: [event])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.start()
+        monitor.dismiss()
+        monitor.start()
+        XCTAssertEqual(monitor.activeOverlayKind, .ending)
+        monitor.dismiss()
+        XCTAssertEqual(monitor.activeOverlayKind, .start)
     }
 }
 

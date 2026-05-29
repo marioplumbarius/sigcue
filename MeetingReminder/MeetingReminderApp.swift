@@ -59,6 +59,7 @@ final class OverlayCoordinator: ObservableObject {
                 if shouldShow, let event = monitor.activeOverlayEvent {
                     windowController.show(
                         event: event,
+                        kind: monitor.activeOverlayKind,
                         onDismiss: { [weak self] in self?.monitor.dismiss() },
                         onSnooze: { [weak self] minutes in self?.monitor.snooze(minutes: minutes) },
                         onJoin: { [weak self] in self?.monitor.joinMeeting() }
