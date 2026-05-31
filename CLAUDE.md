@@ -56,6 +56,10 @@ MeetingReminder/
 | `overlayBackground` | String | "dark" | Background style (dark/blue/purple/gradient/red/green/nightOcean/electric/cyber) |
 | `requireAction` | Bool | false | Hide Snooze button, forcing Join or Dismiss |
 | `enabledCalendarIDs` | [String] | [] | Calendar IDs to monitor (empty = all) |
+| `workingHoursEnabled` | Bool | false | Inject synthetic start/end-of-workday events |
+| `workingHoursStartMinutes` | Int | 540 (09:00) | Start of working hours, minutes since midnight |
+| `workingHoursEndMinutes` | Int | 1020 (17:00) | End of working hours, minutes since midnight |
+| `workingHoursDays` | Int (bitmask) | 62 (Mon–Fri) | Days the synthetic events fire; bit 0 = Sunday |
 
 ## Icon Generation
 

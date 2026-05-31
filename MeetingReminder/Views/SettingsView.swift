@@ -8,6 +8,10 @@ struct SettingsView: View {
     @AppStorage("requireAction") private var requireAction: Bool = false
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
     @AppStorage("endReminderMinutes") private var endReminderMinutes: Int = 0
+    @AppStorage(WorkingHoursEvents.enabledKey) private var workingHoursEnabled: Bool = false
+    @AppStorage(WorkingHoursEvents.startMinutesKey) private var workingHoursStartMinutes: Int = WorkingHoursEvents.defaultStartMinutes
+    @AppStorage(WorkingHoursEvents.endMinutesKey) private var workingHoursEndMinutes: Int = WorkingHoursEvents.defaultEndMinutes
+    @AppStorage(WorkingHoursEvents.daysKey) private var workingHoursDaysMask: Int = WorkingHoursEvents.defaultDaysMask
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
@@ -27,6 +31,11 @@ struct SettingsView: View {
             appearanceTab
                 .tabItem {
                     Label("Appearance", systemImage: "paintbrush")
+                }
+
+            workingHoursTab
+                .tabItem {
+                    Label("Working Hours", systemImage: "clock")
                 }
 
             calendarsTab
@@ -156,6 +165,42 @@ struct SettingsView: View {
         .padding()
     }
 
+    private var workingHoursTab: some View {
+        Form {
+            Section {
+                Toggle("Enable working hours reminders", isOn: $workingHoursEnabled)
+                    .onChange(of: workingHoursEnabled) { _ in calendarService.fetchEvents() }
+                Text("Shows an overlay at the start and end of your work day, so you remember to begin and wrap up on time.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Section("Hours") {
+                DatePicker("Start time:",
+                           selection: startTimeBinding,
+                           displayedComponents: .hourAndMinute)
+                    .disabled(!workingHoursEnabled)
+                DatePicker("End time:",
+                           selection: endTimeBinding,
+                           displayedComponents: .hourAndMinute)
+                    .disabled(!workingHoursEnabled)
+            }
+
+            Section("Days") {
+                HStack(spacing: 8) {
+                    ForEach(orderedWeekdayIndices, id: \.self) { weekdayIndex in
+                        DayChip(label: weekdayShortSymbol(for: weekdayIndex),
+                                isOn: dayBinding(weekdayIndex: weekdayIndex))
+                    }
+                    Spacer()
+                }
+                .disabled(!workingHoursEnabled)
+            }
+        }
+        .formStyle(.grouped)
+        .padding()
+    }
+
     private var calendarsTab: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Select which calendars to monitor:")
@@ -240,6 +285,64 @@ struct SettingsView: View {
         minutes == 1 ? "1 minute" : "\(minutes) minutes"
     }
 
+    private var orderedWeekdayIndices: [Int] {
+        let firstWeekday = Calendar.current.firstWeekday // 1=Sun
+        return (0..<7).map { (firstWeekday - 1 + $0) % 7 }
+    }
+
+    private func weekdayShortSymbol(for weekdayIndex: Int) -> String {
+        let symbols = Calendar.current.veryShortStandaloneWeekdaySymbols
+        return symbols[weekdayIndex]
+    }
+
+    private func dayBinding(weekdayIndex: Int) -> Binding<Bool> {
+        let bit = 1 << weekdayIndex
+        return Binding(
+            get: { (workingHoursDaysMask & bit) != 0 },
+            set: { enabled in
+                if enabled {
+                    workingHoursDaysMask |= bit
+                } else {
+                    workingHoursDaysMask &= ~bit
+                }
+                calendarService.fetchEvents()
+            }
+        )
+    }
+
+    private var startTimeBinding: Binding<Date> {
+        Binding(
+            get: { Self.date(fromMinutes: workingHoursStartMinutes) },
+            set: { newDate in
+                workingHoursStartMinutes = Self.minutes(fromDate: newDate)
+                calendarService.fetchEvents()
+            }
+        )
+    }
+
+    private var endTimeBinding: Binding<Date> {
+        Binding(
+            get: { Self.date(fromMinutes: workingHoursEndMinutes) },
+            set: { newDate in
+                workingHoursEndMinutes = Self.minutes(fromDate: newDate)
+                calendarService.fetchEvents()
+            }
+        )
+    }
+
+    private static func date(fromMinutes minutes: Int) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(bySettingHour: minutes / 60,
+                             minute: minutes % 60,
+                             second: 0,
+                             of: Date()) ?? Date()
+    }
+
+    private static func minutes(fromDate date: Date) -> Int {
+        let comps = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return (comps.hour ?? 0) * 60 + (comps.minute ?? 0)
+    }
+
     private func saveCalendarSelection() {
         UserDefaults.standard.set(Array(enabledCalendarIDs), forKey: "enabledCalendarIDs")
         calendarService.fetchEvents()
@@ -257,6 +360,27 @@ struct SettingsView: View {
                 print("Failed to \(enabled ? "enable" : "disable") launch at login: \(error)")
             }
         }
+    }
+}
+
+private struct DayChip: View {
+    let label: String
+    @Binding var isOn: Bool
+
+    var body: some View {
+        Button {
+            isOn.toggle()
+        } label: {
+            Text(label)
+                .font(.system(size: 12, weight: .semibold))
+                .frame(width: 28, height: 28)
+                .background(
+                    Circle()
+                        .fill(isOn ? Color.accentColor : Color.secondary.opacity(0.15))
+                )
+                .foregroundColor(isOn ? .white : .secondary)
+        }
+        .buttonStyle(.plain)
     }
 }
 

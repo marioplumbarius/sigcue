@@ -71,7 +71,7 @@ final class CalendarService: ObservableObject, CalendarServiceProtocol {
             UserDefaults.standard.stringArray(forKey: "enabledCalendarIDs") ?? []
         )
 
-        events = ekEvents
+        let realEvents = ekEvents
             .filter { event in
                 // Filter out all-day events
                 guard !event.isAllDay else { return false }
@@ -94,6 +94,8 @@ final class CalendarService: ObservableObject, CalendarServiceProtocol {
                 let videoLink = VideoLinkDetector.detectLink(in: ekEvent)
                 return MeetingEvent(from: ekEvent, videoLink: videoLink)
             }
+
+        events = (realEvents + WorkingHoursEvents.synthesize(for: now))
             .sorted { $0.startDate < $1.startDate }
 
         availableCalendars = eventStore.calendars(for: .event)
