@@ -12,6 +12,8 @@ struct SettingsView: View {
     @AppStorage(WorkingHoursEvents.startMinutesKey) private var workingHoursStartMinutes: Int = WorkingHoursEvents.defaultStartMinutes
     @AppStorage(WorkingHoursEvents.endMinutesKey) private var workingHoursEndMinutes: Int = WorkingHoursEvents.defaultEndMinutes
     @AppStorage(WorkingHoursEvents.daysKey) private var workingHoursDaysMask: Int = WorkingHoursEvents.defaultDaysMask
+    @AppStorage(FocusCountdownCoordinator.enabledKey) private var focusCountdownEnabled: Bool = false
+    @AppStorage(FocusCountdownLayout.storageKey) private var focusCountdownLayout: String = FocusCountdownLayout.defaultLayout.rawValue
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
@@ -36,6 +38,11 @@ struct SettingsView: View {
             workingHoursTab
                 .tabItem {
                     Label("Working Hours", systemImage: "clock")
+                }
+
+            focusTab
+                .tabItem {
+                    Label("Focus", systemImage: "timer")
                 }
 
             calendarsTab
@@ -199,6 +206,80 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .padding()
+    }
+
+    private var focusTab: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Toggle("Show floating countdown to next meeting", isOn: $focusCountdownEnabled)
+                .font(.system(size: 13, weight: .semibold))
+            Text("A small always-on-top window that counts down to your next meeting. Drag it anywhere on screen.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
+            Text("Layout")
+                .font(.headline)
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 12)], spacing: 12) {
+                ForEach(FocusCountdownLayout.allCases) { layout in
+                    Button {
+                        focusCountdownLayout = layout.rawValue
+                    } label: {
+                        VStack(spacing: 6) {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.secondary.opacity(0.12))
+                                .frame(height: 70)
+                                .overlay(layoutPreview(layout))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(focusCountdownLayout == layout.rawValue ? Color.accentColor : Color.clear, lineWidth: 3)
+                                )
+                            Text(layout.displayName)
+                                .font(.caption)
+                                .foregroundColor(focusCountdownLayout == layout.rawValue ? .accentColor : .secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Spacer()
+
+            HStack {
+                Spacer()
+                Button("Reset window position") {
+                    NotificationCenter.default.post(name: .focusCountdownResetPosition, object: nil)
+                }
+                .disabled(!focusCountdownEnabled)
+            }
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func layoutPreview(_ layout: FocusCountdownLayout) -> some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            // Loop a 60-second countdown so previews show the digits ticking.
+            let cycle: TimeInterval = 60
+            let remaining = Int(cycle - context.date.timeIntervalSinceReferenceDate
+                .truncatingRemainder(dividingBy: cycle))
+            let timeText = String(format: "%02d:%02d", remaining / 60, remaining % 60)
+            let subtitle = "Standup"
+
+            switch layout {
+            case .modern:
+                ModernDigitalView(time: timeText, subtitle: subtitle)
+                    .padding(4)
+            case .terminal:
+                TerminalDigitalView(time: timeText, subtitle: subtitle)
+                    .padding(4)
+            case .flip:
+                FlipDigitalView(time: timeText, subtitle: subtitle)
+                    .padding(4)
+            }
+        }
     }
 
     private var calendarsTab: some View {

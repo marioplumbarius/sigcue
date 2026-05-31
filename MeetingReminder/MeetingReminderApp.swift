@@ -6,14 +6,17 @@ struct MeetingReminderApp: App {
     @StateObject private var calendarService = CalendarService()
     @StateObject private var meetingMonitor: MeetingMonitor
     @StateObject private var overlayCoordinator: OverlayCoordinator
+    @StateObject private var focusCountdownCoordinator: FocusCountdownCoordinator
 
     init() {
         let calendar = CalendarService()
         let monitor = MeetingMonitor(calendarService: calendar)
         let coordinator = OverlayCoordinator(monitor: monitor)
+        let focusCountdown = FocusCountdownCoordinator(calendarService: calendar)
         _calendarService = StateObject(wrappedValue: calendar)
         _meetingMonitor = StateObject(wrappedValue: monitor)
         _overlayCoordinator = StateObject(wrappedValue: coordinator)
+        _focusCountdownCoordinator = StateObject(wrappedValue: focusCountdown)
     }
 
     var body: some Scene {
@@ -28,6 +31,7 @@ struct MeetingReminderApp: App {
                     calendarService.startMonitoring()
                     meetingMonitor.start()
                     overlayCoordinator.startObserving()
+                    focusCountdownCoordinator.start()
                 }
             }
         } label: {

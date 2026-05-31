@@ -17,6 +17,8 @@
 		A1000007 /* OverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000007 /* OverlayWindow.swift */; };
 		A1000008 /* OverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000008 /* OverlayView.swift */; };
 		A1000009 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000009 /* SettingsView.swift */; };
+		A1000010 /* FocusCountdownService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000010 /* FocusCountdownService.swift */; };
+		A1000011 /* FocusCountdownWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000011 /* FocusCountdownWindow.swift */; };
 		A100000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B100000A /* Assets.xcassets */; };
 		T2000001 /* VideoLinkDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000001 /* VideoLinkDetectorTests.swift */; };
 		T2000002 /* MeetingEventTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = T1000002 /* MeetingEventTests.swift */; };
@@ -47,6 +49,8 @@
 		B1000007 /* OverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayWindow.swift; sourceTree = "<group>"; };
 		B1000008 /* OverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayView.swift; sourceTree = "<group>"; };
 		B1000009 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B1000010 /* FocusCountdownService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusCountdownService.swift; sourceTree = "<group>"; };
+		B1000011 /* FocusCountdownWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusCountdownWindow.swift; sourceTree = "<group>"; };
 		B100000A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B100000B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B100000C /* MeetingReminder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeetingReminder.entitlements; sourceTree = "<group>"; };
@@ -116,6 +120,7 @@
 				B1000004 /* MeetingMonitor.swift */,
 				B1000005 /* VideoLinkDetector.swift */,
 				B100000E /* WorkingHoursEvents.swift */,
+				B1000010 /* FocusCountdownService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -127,6 +132,7 @@
 				B1000007 /* OverlayWindow.swift */,
 				B1000008 /* OverlayView.swift */,
 				B1000009 /* SettingsView.swift */,
+				B1000011 /* FocusCountdownWindow.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -253,6 +259,8 @@
 				A1000007 /* OverlayWindow.swift in Sources */,
 				A1000008 /* OverlayView.swift in Sources */,
 				A1000009 /* SettingsView.swift in Sources */,
+				A1000010 /* FocusCountdownService.swift in Sources */,
+				A1000011 /* FocusCountdownWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
