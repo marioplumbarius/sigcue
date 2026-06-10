@@ -13,7 +13,7 @@ struct OverlayView: View {
     @State private var appeared = false
     @State private var countdown: String = ""
     @State private var timer: Timer?
-    @State private var snoozeOptions: [Int] = [1, 2, 5, 10]
+    @State private var snoozeOptions: [Int] = [1, 5, 10, 15, 20, 30]
     @State private var hasEnded: Bool = false
     @State private var availableSnoozeOptions: [Int] = []
 
@@ -209,7 +209,7 @@ struct OverlayView: View {
 
     private func loadSnoozeOptions() {
         let stored = UserDefaults.standard.array(forKey: "snoozeOptions") as? [Int] ?? []
-        snoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : stored.sorted()
+        snoozeOptions = stored.isEmpty ? [1, 5, 10, 15, 20, 30] : stored.sorted()
     }
 
     private func refreshAvailability() {
