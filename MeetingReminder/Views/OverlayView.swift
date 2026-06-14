@@ -229,18 +229,18 @@ struct OverlayView: View {
         guard !requireAction else { return false }
         switch kind {
         case .start:
-            return !availableSnoozeOptions.isEmpty
+            return availableSnoozeOptions.count == 1
         case .ending:
-            return !hasEnded && !availableSnoozeOptions.isEmpty
+            return !hasEnded && availableSnoozeOptions.count == 1
         }
     }
 
     private var showSnoozeMenu: Bool {
         switch kind {
         case .start:
-            return !availableSnoozeOptions.isEmpty
+            return availableSnoozeOptions.count > 1
         case .ending:
-            return !hasEnded && !availableSnoozeOptions.isEmpty
+            return !hasEnded && availableSnoozeOptions.count > 1
         }
     }
 
