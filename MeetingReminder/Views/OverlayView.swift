@@ -13,7 +13,6 @@ struct OverlayView: View {
     @State private var appeared = false
     @State private var countdown: String = ""
     @State private var timer: Timer?
-    @State private var snoozeOptions: [Int] = [1, 2, 5, 10]
     @State private var hasEnded: Bool = false
     @State private var availableSnoozeOptions: [Int] = []
 
@@ -76,23 +75,7 @@ struct OverlayView: View {
                     }
 
 
-                    if showQuickSnooze {
-                        Button(action: { onSnooze(availableSnoozeOptions.first ?? 1) }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "clock.arrow.circlepath")
-                                Text("Snooze \(availableSnoozeOptions.first ?? 1) min")
-                            }
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 14)
-                            .background(Color.white.opacity(0.2))
-                            .cornerRadius(12)
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    if showSnoozeMenu {
+                    if showSnoozeButton {
                         Menu {
                             ForEach(availableSnoozeOptions, id: \.self) { minutes in
                                 Button(snoozeLabel(minutes: minutes)) {
@@ -209,38 +192,25 @@ struct OverlayView: View {
 
     private func loadSnoozeOptions() {
         let stored = (UserDefaults.standard.array(forKey: "snoozeOptions") as? [NSNumber])?.map { $0.intValue } ?? []
-        snoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : stored.sorted()
+        availableSnoozeOptions = stored.isEmpty ? [1, 2, 5, 10] : stored.sorted()
     }
 
     private func refreshAvailability() {
         switch kind {
         case .start:
             hasEnded = false
-            availableSnoozeOptions = snoozeOptions
         case .ending:
             hasEnded = event.endDate.timeIntervalSinceNow <= 0
-            // Offer the full configured snooze list, just like the start overlay.
-            // The monitor caps any snooze that would run past the meeting's end.
-            availableSnoozeOptions = snoozeOptions
         }
     }
 
-    private var showQuickSnooze: Bool {
+    private var showSnoozeButton: Bool {
         guard !requireAction else { return false }
         switch kind {
         case .start:
-            return availableSnoozeOptions.count == 1
+            return !availableSnoozeOptions.isEmpty
         case .ending:
-            return !hasEnded && availableSnoozeOptions.count == 1
-        }
-    }
-
-    private var showSnoozeMenu: Bool {
-        switch kind {
-        case .start:
-            return availableSnoozeOptions.count > 1
-        case .ending:
-            return !hasEnded && availableSnoozeOptions.count > 1
+            return !hasEnded && !availableSnoozeOptions.isEmpty
         }
     }
 
