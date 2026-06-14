@@ -4,7 +4,7 @@ import SwiftUI
 final class OverlayWindowController {
     private var panels: [NSPanel] = []
 
-    func show(event: MeetingEvent, onDismiss: @escaping () -> Void,
+    func show(event: MeetingEvent, kind: OverlayKind, onDismiss: @escaping () -> Void,
               onSnooze: @escaping (Int) -> Void, onJoin: @escaping () -> Void) {
         close()
 
@@ -27,6 +27,7 @@ final class OverlayWindowController {
 
             let overlayView = OverlayView(
                 event: event,
+                kind: kind,
                 onDismiss: { [weak self] in
                     self?.close()
                     onDismiss()

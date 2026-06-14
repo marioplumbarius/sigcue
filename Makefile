@@ -1,6 +1,6 @@
 VERSION   ?= 1.0.0
-APP        = Screeny
-SCHEME     = Screeny
+APP        = MeetingReminder
+SCHEME     = MeetingReminder
 BUILD_DIR  = build
 APP_PATH   = $(BUILD_DIR)/Build/Products/Release/$(APP).app
 PKG_NAME   = $(APP)-$(VERSION).pkg
@@ -21,6 +21,7 @@ build:
 
 # DMG з drag-to-Applications вікном
 installer: build
+	codesign --force --sign - --deep "$(APP_PATH)"
 	rm -f "$(DMG_NAME)"
 	create-dmg \
 		--volname "$(APP)" \

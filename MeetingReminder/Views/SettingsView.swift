@@ -5,7 +5,15 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("reminderMinutes") private var reminderMinutes: Int = 5
     @AppStorage("soundEnabled") private var soundEnabled: Bool = true
+    @AppStorage("requireAction") private var requireAction: Bool = false
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
+    @AppStorage("endReminderMinutes") private var endReminderMinutes: Int = 0
+    @AppStorage(WorkingHoursEvents.enabledKey) private var workingHoursEnabled: Bool = false
+    @AppStorage(WorkingHoursEvents.startMinutesKey) private var workingHoursStartMinutes: Int = WorkingHoursEvents.defaultStartMinutes
+    @AppStorage(WorkingHoursEvents.endMinutesKey) private var workingHoursEndMinutes: Int = WorkingHoursEvents.defaultEndMinutes
+    @AppStorage(WorkingHoursEvents.daysKey) private var workingHoursDaysMask: Int = WorkingHoursEvents.defaultDaysMask
+    @AppStorage(FocusCountdownCoordinator.enabledKey) private var focusCountdownEnabled: Bool = false
+    @AppStorage(FocusCountdownLayout.storageKey) private var focusCountdownLayout: String = FocusCountdownLayout.defaultLayout.rawValue
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
@@ -27,6 +35,16 @@ struct SettingsView: View {
                     Label("Appearance", systemImage: "paintbrush")
                 }
 
+            workingHoursTab
+                .tabItem {
+                    Label("Working Hours", systemImage: "clock")
+                }
+
+            focusTab
+                .tabItem {
+                    Label("Focus", systemImage: "timer")
+                }
+
             calendarsTab
                 .tabItem {
                     Label("Calendars", systemImage: "calendar")
@@ -40,7 +58,7 @@ struct SettingsView: View {
 
     private var generalTab: some View {
         Form {
-            Section {
+            Section("Reminders") {
                 Picker("Remind me before meetings:", selection: $reminderMinutes) {
                     Text("1 minute").tag(1)
                     Text("2 minutes").tag(2)
@@ -48,10 +66,25 @@ struct SettingsView: View {
                     Text("10 minutes").tag(10)
                 }
                 .pickerStyle(.menu)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Picker("Remind me when meeting is about to end:", selection: $endReminderMinutes) {
+                        Text("Never").tag(0)
+                        Text("1 minute").tag(1)
+                        Text("2 minutes").tag(2)
+                        Text("5 minutes").tag(5)
+                        Text("10 minutes").tag(10)
+                    }
+                    .pickerStyle(.menu)
+                    Text("Skipped when another meeting starts back-to-back.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
             Section {
                 Toggle("Play sound with reminder", isOn: $soundEnabled)
+                Toggle("Require action (hide Snooze button)", isOn: $requireAction)
             }
 
             Section("Snooze options") {
@@ -139,6 +172,116 @@ struct SettingsView: View {
         .padding()
     }
 
+    private var workingHoursTab: some View {
+        Form {
+            Section {
+                Toggle("Enable working hours reminders", isOn: $workingHoursEnabled)
+                    .onChange(of: workingHoursEnabled) { _ in calendarService.fetchEvents() }
+                Text("Shows an overlay at the start and end of your work day, so you remember to begin and wrap up on time.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Section("Hours") {
+                DatePicker("Start time:",
+                           selection: startTimeBinding,
+                           displayedComponents: .hourAndMinute)
+                    .disabled(!workingHoursEnabled)
+                DatePicker("End time:",
+                           selection: endTimeBinding,
+                           displayedComponents: .hourAndMinute)
+                    .disabled(!workingHoursEnabled)
+            }
+
+            Section("Days") {
+                HStack(spacing: 8) {
+                    ForEach(orderedWeekdayIndices, id: \.self) { weekdayIndex in
+                        DayChip(label: weekdayShortSymbol(for: weekdayIndex),
+                                isOn: dayBinding(weekdayIndex: weekdayIndex))
+                    }
+                    Spacer()
+                }
+                .disabled(!workingHoursEnabled)
+            }
+        }
+        .formStyle(.grouped)
+        .padding()
+    }
+
+    private var focusTab: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Toggle("Show floating countdown to next meeting", isOn: $focusCountdownEnabled)
+                .font(.system(size: 13, weight: .semibold))
+            Text("A small always-on-top window that counts down to your next meeting. Drag it anywhere on screen.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
+            Text("Layout")
+                .font(.headline)
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 12)], spacing: 12) {
+                ForEach(FocusCountdownLayout.allCases) { layout in
+                    Button {
+                        focusCountdownLayout = layout.rawValue
+                    } label: {
+                        VStack(spacing: 6) {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.secondary.opacity(0.12))
+                                .frame(height: 70)
+                                .overlay(layoutPreview(layout))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .stroke(focusCountdownLayout == layout.rawValue ? Color.accentColor : Color.clear, lineWidth: 3)
+                                )
+                            Text(layout.displayName)
+                                .font(.caption)
+                                .foregroundColor(focusCountdownLayout == layout.rawValue ? .accentColor : .secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Spacer()
+
+            HStack {
+                Spacer()
+                Button("Reset window position") {
+                    NotificationCenter.default.post(name: .focusCountdownResetPosition, object: nil)
+                }
+                .disabled(!focusCountdownEnabled)
+            }
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func layoutPreview(_ layout: FocusCountdownLayout) -> some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            // Loop a 60-second countdown so previews show the digits ticking.
+            let cycle: TimeInterval = 60
+            let remaining = Int(cycle - context.date.timeIntervalSinceReferenceDate
+                .truncatingRemainder(dividingBy: cycle))
+            let timeText = String(format: "%02d:%02d", remaining / 60, remaining % 60)
+            let subtitle = "Standup"
+
+            switch layout {
+            case .modern:
+                ModernDigitalView(time: timeText, subtitle: subtitle)
+                    .padding(4)
+            case .terminal:
+                TerminalDigitalView(time: timeText, subtitle: subtitle)
+                    .padding(4)
+            case .flip:
+                FlipDigitalView(time: timeText, subtitle: subtitle)
+                    .padding(4)
+            }
+        }
+    }
+
     private var calendarsTab: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Select which calendars to monitor:")
@@ -223,6 +366,64 @@ struct SettingsView: View {
         minutes == 1 ? "1 minute" : "\(minutes) minutes"
     }
 
+    private var orderedWeekdayIndices: [Int] {
+        let firstWeekday = Calendar.current.firstWeekday // 1=Sun
+        return (0..<7).map { (firstWeekday - 1 + $0) % 7 }
+    }
+
+    private func weekdayShortSymbol(for weekdayIndex: Int) -> String {
+        let symbols = Calendar.current.veryShortStandaloneWeekdaySymbols
+        return symbols[weekdayIndex]
+    }
+
+    private func dayBinding(weekdayIndex: Int) -> Binding<Bool> {
+        let bit = 1 << weekdayIndex
+        return Binding(
+            get: { (workingHoursDaysMask & bit) != 0 },
+            set: { enabled in
+                if enabled {
+                    workingHoursDaysMask |= bit
+                } else {
+                    workingHoursDaysMask &= ~bit
+                }
+                calendarService.fetchEvents()
+            }
+        )
+    }
+
+    private var startTimeBinding: Binding<Date> {
+        Binding(
+            get: { Self.date(fromMinutes: workingHoursStartMinutes) },
+            set: { newDate in
+                workingHoursStartMinutes = Self.minutes(fromDate: newDate)
+                calendarService.fetchEvents()
+            }
+        )
+    }
+
+    private var endTimeBinding: Binding<Date> {
+        Binding(
+            get: { Self.date(fromMinutes: workingHoursEndMinutes) },
+            set: { newDate in
+                workingHoursEndMinutes = Self.minutes(fromDate: newDate)
+                calendarService.fetchEvents()
+            }
+        )
+    }
+
+    private static func date(fromMinutes minutes: Int) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(bySettingHour: minutes / 60,
+                             minute: minutes % 60,
+                             second: 0,
+                             of: Date()) ?? Date()
+    }
+
+    private static func minutes(fromDate date: Date) -> Int {
+        let comps = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return (comps.hour ?? 0) * 60 + (comps.minute ?? 0)
+    }
+
     private func saveCalendarSelection() {
         UserDefaults.standard.set(Array(enabledCalendarIDs), forKey: "enabledCalendarIDs")
         calendarService.fetchEvents()
@@ -240,6 +441,27 @@ struct SettingsView: View {
                 print("Failed to \(enabled ? "enable" : "disable") launch at login: \(error)")
             }
         }
+    }
+}
+
+private struct DayChip: View {
+    let label: String
+    @Binding var isOn: Bool
+
+    var body: some View {
+        Button {
+            isOn.toggle()
+        } label: {
+            Text(label)
+                .font(.system(size: 12, weight: .semibold))
+                .frame(width: 28, height: 28)
+                .background(
+                    Circle()
+                        .fill(isOn ? Color.accentColor : Color.secondary.opacity(0.15))
+                )
+                .foregroundColor(isOn ? .white : .secondary)
+        }
+        .buttonStyle(.plain)
     }
 }
 

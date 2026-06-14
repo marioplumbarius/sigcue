@@ -10,3 +10,4 @@ DerivedData/
 
 # Icon generation
 __pycache__/
+.dmg
