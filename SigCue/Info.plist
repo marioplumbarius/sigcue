@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>Meeting Reminder</string>
+	<string>SigCue</string>
 	<key>CFBundleDisplayName</key>
-	<string>Meeting Reminder</string>
+	<string>SigCue</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.meetingreminder.app</string>
+	<string>com.sigcue.app</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>CFBundleShortVersionString</key>
@@ -15,14 +15,14 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleExecutable</key>
-	<string>MeetingReminder</string>
+	<string>SigCue</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Meeting Reminder needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
+	<string>SigCue needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Meeting Reminder needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
+	<string>SigCue needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
 </dict>
 </plist>

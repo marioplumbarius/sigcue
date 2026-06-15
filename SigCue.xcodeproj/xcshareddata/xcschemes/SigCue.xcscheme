@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1000001"
-               BuildableName = "MeetingReminder.app"
-               BlueprintName = "MeetingReminder"
-               ReferencedContainer = "container:MeetingReminder.xcodeproj">
+               BuildableName = "SigCue.app"
+               BlueprintName = "SigCue"
+               ReferencedContainer = "container:SigCue.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "T6000001"
-               BuildableName = "MeetingReminderTests.xctest"
-               BlueprintName = "MeetingReminderTests"
-               ReferencedContainer = "container:MeetingReminder.xcodeproj">
+               BuildableName = "SigCueTests.xctest"
+               BlueprintName = "SigCueTests"
+               ReferencedContainer = "container:SigCue.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1000001"
-            BuildableName = "MeetingReminder.app"
-            BlueprintName = "MeetingReminder"
-            ReferencedContainer = "container:MeetingReminder.xcodeproj">
+            BuildableName = "SigCue.app"
+            BlueprintName = "SigCue"
+            ReferencedContainer = "container:SigCue.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1000001"
-            BuildableName = "MeetingReminder.app"
-            BlueprintName = "MeetingReminder"
-            ReferencedContainer = "container:MeetingReminder.xcodeproj">
+            BuildableName = "SigCue.app"
+            BlueprintName = "SigCue"
+            ReferencedContainer = "container:SigCue.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

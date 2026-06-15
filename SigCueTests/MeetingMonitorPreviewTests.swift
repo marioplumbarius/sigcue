@@ -1,5 +1,5 @@
 import XCTest
-@testable import MeetingReminder
+@testable import SigCue
 
 @MainActor
 final class MeetingMonitorPreviewTests: XCTestCase {
