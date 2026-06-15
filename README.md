@@ -24,10 +24,3 @@ Chronic dysfunction in the dopamine-regulated timing circuit of the basal gangli
 ### Synthetic Salience
 
 The ADHD brain displays aberrant functional connectivity within the Salience Network (the anterior insula and anterior cingulate cortex), making it highly difficult to segregate critical future events from background noise [[4]](https://pmc.ncbi.nlm.nih.gov/articles/PMC3998750/)[[5]](https://pmc.ncbi.nlm.nih.gov/articles/PMC2899886/). `sigcue` forces your brain to process transitions by physically taking over the UI layer when it matters most.
-
-## Inspired By
-
-This project is built on the foundational ADHD research of **Dr. Russell A. Barkley**, an internationally recognized authority on attention deficit hyperactivity disorder. His decades of work on executive function, time blindness, and working memory deficits directly inform `sigcue`'s design philosophy.
-
-- **Official Website**: [www.russellbarkley.org](https://www.russellbarkley.org/) — Research, books, fact sheets, and courses on ADHD
-- **YouTube Channel**: [Dr. Russell A. Barkley](https://www.youtube.com/channel/UC0tLWu7ljYVFPiZQfHjTMsA) — Educational videos on ADHD mechanisms and management strategies
