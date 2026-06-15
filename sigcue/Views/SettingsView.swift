@@ -108,6 +108,27 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Preview use cases") {
+                Button {
+                    meetingMonitor.previewStartingWithVideo()
+                } label: {
+                    Label("Starting with Video", systemImage: "video.fill")
+                }
+
+                Button {
+                    meetingMonitor.previewEnding()
+                } label: {
+                    Label("Meeting Ending", systemImage: "checkmark.circle")
+                }
+
+                Button {
+                    UserDefaults.standard.set(true, forKey: "requireAction")
+                    meetingMonitor.previewStartingRequired()
+                } label: {
+                    Label("Requires Action (Red)", systemImage: "exclamationmark.circle.fill")
+                }
+            }
+
             Section {
                 HStack {
                     Text("Calendar access:")
