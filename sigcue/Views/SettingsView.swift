@@ -102,26 +102,36 @@ struct SettingsView: View {
 
             Section("Preview") {
                 Button {
-                    meetingMonitor.previewOverlay()
+                    meetingMonitor.previewStartingWithVideo()
                 } label: {
-                    Label("Example", systemImage: "play.circle")
+                    Label("Starts in...", systemImage: "video.fill")
                 }
 
                 Button {
-                    meetingMonitor.previewStartingWithVideo()
+                    meetingMonitor.previewStarted()
                 } label: {
-                    Label("Starting with Video", systemImage: "video.fill")
+                    Label("Started", systemImage: "play.fill")
                 }
 
                 Button {
                     meetingMonitor.previewEnding()
                 } label: {
-                    Label("Ending", systemImage: "checkmark.circle")
+                    Label("Ends in...", systemImage: "hourglass.bottomhalf.filled")
+                }
+
+                Button {
+                    meetingMonitor.previewEnded()
+                } label: {
+                    Label("Ended", systemImage: "checkmark.circle.fill")
                 }
 
                 Button {
                     UserDefaults.standard.set(true, forKey: "requireAction")
                     meetingMonitor.previewStartingRequired()
+                    // Reset after a brief delay to show the overlay
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        UserDefaults.standard.set(false, forKey: "requireAction")
+                    }
                 } label: {
                     Label("Requires Action", systemImage: "exclamationmark.circle.fill")
                 }

@@ -93,7 +93,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)
-                            .background(Color.white.opacity(0.2))
+                            .background(Color(red: 0.95, green: 0.75, blue: 0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .menuStyle(.borderlessButton)
@@ -112,7 +112,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)
-                            .background(requireAction ? Color(red: 0.95, green: 0.1, blue: 0.1) : Color.white.opacity(0.2))
+                            .background(dismissButtonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(OverlayButtonStyle())
@@ -226,6 +226,18 @@ struct OverlayView: View {
             // Always show Acknowledge once snooze is no longer an option, so the
             // user can never be trapped in the overlay with no actionable button.
             return hasEnded || availableSnoozeOptions.isEmpty
+        }
+    }
+
+    private var dismissButtonColor: Color {
+        if requireAction {
+            return Color(red: 0.95, green: 0.1, blue: 0.1)
+        }
+        switch kind {
+        case .start:
+            return Color(red: 0.95, green: 0.1, blue: 0.1)
+        case .ending:
+            return Color(red: 0.13, green: 0.70, blue: 0.42)
         }
     }
 

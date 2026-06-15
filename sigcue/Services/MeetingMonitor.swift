@@ -116,13 +116,43 @@ final class MeetingMonitor: ObservableObject {
         shouldShowOverlay = true
     }
 
+    func previewStarted() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-started-\(now.timeIntervalSince1970)",
+            title: "All Hands",
+            startDate: now.addingTimeInterval(-2 * 60),
+            endDate: now.addingTimeInterval(58 * 60),
+            calendar: "Work",
+            videoLink: URL(string: "https://zoom.us/j/98765432100")
+        )
+        activeOverlayKind = .start
+        activeOverlayEvent = event
+        shouldShowOverlay = true
+    }
+
     func previewEnding() {
         let now = Date()
         let event = MeetingEvent(
-            id: "preview-end-\(now.timeIntervalSince1970)",
+            id: "preview-ending-\(now.timeIntervalSince1970)",
             title: "Design Review",
             startDate: now.addingTimeInterval(-28 * 60),
             endDate: now.addingTimeInterval(2 * 60),
+            calendar: "Work",
+            videoLink: nil
+        )
+        activeOverlayKind = .ending
+        activeOverlayEvent = event
+        shouldShowOverlay = true
+    }
+
+    func previewEnded() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-ended-\(now.timeIntervalSince1970)",
+            title: "Sprint Planning",
+            startDate: now.addingTimeInterval(-62 * 60),
+            endDate: now.addingTimeInterval(-2 * 60),
             calendar: "Work",
             videoLink: nil
         )
