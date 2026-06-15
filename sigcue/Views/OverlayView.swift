@@ -224,7 +224,7 @@ struct OverlayView: View {
     private var requireAction: Bool {
         switch kind {
         case .start:
-            return event.startDate.timeIntervalSinceNow <= 0
+            return false
         case .ending:
             return hasEnded
         }
