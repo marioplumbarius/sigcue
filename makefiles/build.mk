@@ -1,4 +1,4 @@
-.PHONY: build build-release install package open
+.PHONY: build build-release install package open close
 
 # ============================================================================
 # BUILD TARGETS
@@ -47,8 +47,14 @@ package: build-release
 	@cd release-assets && zip -r ../sigcue.zip sigcue.app
 	@echo "✓ Package created: sigcue.zip"
 
-# Launch the installed app
-open:
+# Close the running app
+close:
+	@pkill -f "sigcue" 2>/dev/null || true
+	@echo "✓ App closed"
+
+# Launch the installed app (closes first to ensure fresh start)
+open: close
+	@sleep 0.5
 	@if [ -d "$(INSTALLED_APP)" ]; then \
 		open "$(INSTALLED_APP)"; \
 	else \

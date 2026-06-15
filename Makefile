@@ -45,6 +45,8 @@ help:
 	@echo "  clean          Remove build artifacts"
 	@echo "  dev            Build Debug version and install"
 	@echo "  release        Build Release version and install"
+	@echo "  open           Close app (if running), then launch it"
+	@echo "  close          Close the running app"
 	@echo ""
 	@echo "Options:"
 	@echo "  CONFIG=Release  Use Release configuration (default: Debug)"
