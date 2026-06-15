@@ -31,6 +31,9 @@ playground.xcworkspace
 
 .build/
 
+# Build artifacts (from Makefile)
+build/
+
 # CocoaPods
 #
 # We recommend against adding the Pods directory to your .gitignore. However
