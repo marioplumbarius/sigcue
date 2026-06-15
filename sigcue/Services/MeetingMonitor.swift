@@ -96,9 +96,81 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Preview",
             videoLink: URL(string: "https://zoom.us/j/00000000000")
         )
-        activeOverlayKind = .start
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
+    }
+
+    func previewStartingWithVideo() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-start-\(now.timeIntervalSince1970)",
+            title: "Team Standup",
+            startDate: now.addingTimeInterval(2 * 60),
+            endDate: now.addingTimeInterval(32 * 60),
+            calendar: "Work",
+            videoLink: URL(string: "https://meet.google.com/abc-defg-hij")
+        )
+        showPreviewOverlay(with: event)
+    }
+
+    func previewStarted() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-started-\(now.timeIntervalSince1970)",
+            title: "All Hands",
+            startDate: now.addingTimeInterval(-2 * 60),
+            endDate: now.addingTimeInterval(58 * 60),
+            calendar: "Work",
+            videoLink: URL(string: "https://zoom.us/j/98765432100")
+        )
+        showPreviewOverlay(with: event)
+    }
+
+    func previewEnding() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-ending-\(now.timeIntervalSince1970)",
+            title: "Design Review",
+            startDate: now.addingTimeInterval(-28 * 60),
+            endDate: now.addingTimeInterval(2 * 60),
+            calendar: "Work",
+            videoLink: nil
+        )
+        showPreviewOverlay(with: event, skipStartReminder: true)
+    }
+
+    func previewEnded() {
+        let now = Date()
+        let event = MeetingEvent(
+            id: "preview-ended-\(now.timeIntervalSince1970)",
+            title: "Sprint Planning",
+            startDate: now.addingTimeInterval(-62 * 60),
+            endDate: now.addingTimeInterval(-1 * 60),
+            calendar: "Work",
+            videoLink: nil
+        )
+        showPreviewOverlay(with: event, skipStartReminder: true)
+    }
+
+    private func showPreviewOverlay(with event: MeetingEvent, skipStartReminder: Bool = false) {
+        class PreviewCalendarService: CalendarServiceProtocol {
+            let events: [MeetingEvent]
+            init(events: [MeetingEvent]) { self.events = events }
+        }
+
+        let mockService = PreviewCalendarService(events: [event])
+        let tempMonitor = MeetingMonitor(calendarService: mockService)
+
+        if skipStartReminder {
+            tempMonitor.shownEventIDs.insert(event.id)
+            UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+            tempMonitor.endReminderSnoozes[event.id] = Date().addingTimeInterval(-60)
+        }
+
+        tempMonitor.checkUpcomingMeetings()
+
+        activeOverlayEvent = tempMonitor.activeOverlayEvent
+        activeOverlayKind = tempMonitor.activeOverlayKind
+        shouldShowOverlay = tempMonitor.shouldShowOverlay
     }
 
     func joinMeeting() {

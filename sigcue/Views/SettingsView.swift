@@ -5,7 +5,6 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("reminderMinutes") private var reminderMinutes: Int = 5
     @AppStorage("soundEnabled") private var soundEnabled: Bool = true
-    @AppStorage("requireAction") private var requireAction: Bool = false
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
     @AppStorage("endReminderMinutes") private var endReminderMinutes: Int = 0
     @AppStorage(WorkingHoursEvents.enabledKey) private var workingHoursEnabled: Bool = false
@@ -84,7 +83,6 @@ struct SettingsView: View {
 
             Section {
                 Toggle("Play sound with reminder", isOn: $soundEnabled)
-                Toggle("Require action (hide Snooze button)", isOn: $requireAction)
             }
 
             Section("Snooze options") {
@@ -100,11 +98,21 @@ struct SettingsView: View {
                     }
             }
 
-            Section {
-                Button {
-                    meetingMonitor.previewOverlay()
-                } label: {
-                    Label("Preview overlay", systemImage: "play.circle")
+            Section("Preview") {
+                Button("Starts in...", systemImage: "video.fill") {
+                    meetingMonitor.previewStartingWithVideo()
+                }
+
+                Button("Started", systemImage: "play.fill") {
+                    meetingMonitor.previewStarted()
+                }
+
+                Button("Ends in...", systemImage: "hourglass.bottomhalf.filled") {
+                    meetingMonitor.previewEnding()
+                }
+
+                Button("Ended", systemImage: "checkmark.circle.fill") {
+                    meetingMonitor.previewEnded()
                 }
             }
 

@@ -8,7 +8,6 @@ struct OverlayView: View {
     let onJoin: () -> Void
 
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
-    @AppStorage("requireAction") private var requireAction: Bool = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
     @State private var countdown: String = ""
@@ -24,6 +23,20 @@ struct OverlayView: View {
                 .fill(currentBackground)
 
             VStack(spacing: 24) {
+                // Close button (emergency dismiss)
+                HStack {
+                    Spacer()
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.6))
+                            .padding(8)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(20)
+
                 Spacer()
 
                 // Icon (decorative)
@@ -68,7 +81,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 16)
-                            .background(Color(red: 0.13, green: 0.70, blue: 0.42))
+                            .background(joinButtonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(OverlayButtonStyle())
@@ -93,7 +106,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)
-                            .background(Color.white.opacity(0.2))
+                            .background(snoozeButtonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .menuStyle(.borderlessButton)
@@ -112,7 +125,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)
-                            .background(Color.white.opacity(0.2))
+                            .background(dismissButtonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(OverlayButtonStyle())
@@ -208,7 +221,17 @@ struct OverlayView: View {
         }
     }
 
+    private var requireAction: Bool {
+        switch kind {
+        case .start:
+            return false
+        case .ending:
+            return hasEnded
+        }
+    }
+
     private var showSnoozeMenu: Bool {
+        guard !requireAction else { return false }
         switch kind {
         case .start:
             return !availableSnoozeOptions.isEmpty
@@ -225,6 +248,39 @@ struct OverlayView: View {
             // Always show Acknowledge once snooze is no longer an option, so the
             // user can never be trapped in the overlay with no actionable button.
             return hasEnded || availableSnoozeOptions.isEmpty
+        }
+    }
+
+    private var desiredActionColor: Color {
+        Color(red: 0.13, green: 0.70, blue: 0.42)
+    }
+
+    private var secondaryActionColor: Color {
+        Color.white.opacity(0.2)
+    }
+
+    private var joinButtonColor: Color {
+        switch kind {
+        case .start:
+            return desiredActionColor
+        case .ending:
+            return secondaryActionColor
+        }
+    }
+
+    private var snoozeButtonColor: Color {
+        desiredActionColor
+    }
+
+    private var dismissButtonColor: Color {
+        if requireAction {
+            return desiredActionColor
+        }
+        switch kind {
+        case .start:
+            return secondaryActionColor
+        case .ending:
+            return desiredActionColor
         }
     }
 
