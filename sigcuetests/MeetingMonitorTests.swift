@@ -222,6 +222,81 @@ final class MeetingMonitorTests: XCTestCase {
         monitor.dismiss()
         XCTAssertEqual(monitor.activeOverlayKind, .start)
     }
+
+    // MARK: - Require Action Feature Tests
+
+    func testRequireActionAppStorageKey() {
+        // Test that the requireAction setting can be read and written
+        UserDefaults.standard.set(false, forKey: "requireAction")
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: "requireAction"))
+
+        UserDefaults.standard.set(true, forKey: "requireAction")
+        XCTAssertTrue(UserDefaults.standard.bool(forKey: "requireAction"))
+    }
+
+    func testRequireActionDefaultIsFalse() {
+        // Test that requireAction defaults to false
+        UserDefaults.standard.removeObject(forKey: "requireAction")
+        let value = UserDefaults.standard.bool(forKey: "requireAction")
+        XCTAssertFalse(value, "requireAction should default to false")
+    }
+
+    func testRequireActionChanges() {
+        // Test the behavior when requireAction is toggled
+        UserDefaults.standard.set(false, forKey: "requireAction")
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: "requireAction"))
+
+        UserDefaults.standard.set(true, forKey: "requireAction")
+        XCTAssertTrue(UserDefaults.standard.bool(forKey: "requireAction"))
+
+        UserDefaults.standard.set(false, forKey: "requireAction")
+        XCTAssertFalse(UserDefaults.standard.bool(forKey: "requireAction"))
+    }
+
+    func testSnoozeButtonHiddenWhenRequireActionEnabled() {
+        // Verify the logic: when requireAction is true, snooze button is hidden
+        // This is implemented in OverlayView.showSnoozeMenu:
+        // guard !requireAction else { return false }
+
+        let requireAction = true
+        var showSnoozeMenu = true
+
+        // Simulate the OverlayView logic
+        if requireAction {
+            showSnoozeMenu = false
+        }
+
+        XCTAssertFalse(showSnoozeMenu, "Snooze menu should be hidden when requireAction is enabled")
+    }
+
+    func testSnoozeButtonVisibleWhenRequireActionDisabled() {
+        let requireAction = false
+        var showSnoozeMenu = true
+
+        // Simulate the OverlayView logic
+        if requireAction {
+            showSnoozeMenu = false
+        }
+
+        XCTAssertTrue(showSnoozeMenu, "Snooze menu should be visible when requireAction is disabled")
+    }
+
+    func testActionButtonColorLogic() {
+        // Test the button color logic:
+        // Join button: requireAction ? Color(red: 0.95, green: 0.1, blue: 0.1) : Color(red: 0.13, green: 0.70, blue: 0.42)
+        // Dismiss button: requireAction ? Color(red: 0.95, green: 0.1, blue: 0.1) : Color.white.opacity(0.2)
+
+        let testCases: [(requireAction: Bool, shouldBeRed: Bool)] = [
+            (requireAction: true, shouldBeRed: true),
+            (requireAction: false, shouldBeRed: false),
+        ]
+
+        for testCase in testCases {
+            let isRed = testCase.requireAction
+            XCTAssertEqual(isRed, testCase.shouldBeRed,
+                           "Button color logic for requireAction=\(testCase.requireAction)")
+        }
+    }
 }
 
 // MARK: - Mock

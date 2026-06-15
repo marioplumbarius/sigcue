@@ -68,7 +68,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 16)
-                            .background(Color(red: 0.13, green: 0.70, blue: 0.42))
+                            .background(requireAction ? Color(red: 0.95, green: 0.1, blue: 0.1) : Color(red: 0.13, green: 0.70, blue: 0.42))
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(OverlayButtonStyle())
@@ -112,7 +112,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)
-                            .background(Color.white.opacity(0.2))
+                            .background(requireAction ? Color(red: 0.95, green: 0.1, blue: 0.1) : Color.white.opacity(0.2))
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(OverlayButtonStyle())
@@ -209,6 +209,7 @@ struct OverlayView: View {
     }
 
     private var showSnoozeMenu: Bool {
+        guard !requireAction else { return false }
         switch kind {
         case .start:
             return !availableSnoozeOptions.isEmpty

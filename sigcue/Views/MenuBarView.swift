@@ -11,19 +11,19 @@ struct MenuBarView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            PreferencesButton {
+                dismiss()
+            }
+
+            Divider()
+                .padding(.vertical, 6)
+
             if calendarService.authorizationStatus != .authorized {
                 calendarAccessSection
             } else if upcomingEvents.isEmpty {
                 noEventsSection
             } else {
                 eventListSection
-            }
-
-            Divider()
-                .padding(.vertical, 6)
-
-            PreferencesButton {
-                dismiss()
             }
 
             Divider()
