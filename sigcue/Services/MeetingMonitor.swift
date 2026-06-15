@@ -135,7 +135,7 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Work",
             videoLink: nil
         )
-        showPreviewOverlay(with: event)
+        showPreviewOverlay(with: event, skipStartReminder: true)
     }
 
     func previewEnded() {
@@ -156,15 +156,15 @@ final class MeetingMonitor: ObservableObject {
         let event = MeetingEvent(
             id: "preview-req-\(now.timeIntervalSince1970)",
             title: "1:1 Sync",
-            startDate: now.addingTimeInterval(2 * 60),
-            endDate: now.addingTimeInterval(32 * 60),
+            startDate: now.addingTimeInterval(-28 * 60),
+            endDate: now.addingTimeInterval(2 * 60),
             calendar: "Work",
             videoLink: URL(string: "https://zoom.us/j/12345678901")
         )
-        showPreviewOverlay(with: event)
+        showPreviewOverlay(with: event, skipStartReminder: true)
     }
 
-    private func showPreviewOverlay(with event: MeetingEvent) {
+    private func showPreviewOverlay(with event: MeetingEvent, skipStartReminder: Bool = false) {
         class PreviewCalendarService: CalendarServiceProtocol {
             let events: [MeetingEvent]
             init(events: [MeetingEvent]) { self.events = events }
@@ -172,6 +172,11 @@ final class MeetingMonitor: ObservableObject {
 
         let mockService = PreviewCalendarService(events: [event])
         let tempMonitor = MeetingMonitor(calendarService: mockService)
+
+        if skipStartReminder {
+            tempMonitor.shownEventIDs.insert(event.id)
+            UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        }
 
         tempMonitor.checkUpcomingMeetings()
 

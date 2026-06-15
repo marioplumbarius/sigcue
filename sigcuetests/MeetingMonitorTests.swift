@@ -225,44 +225,42 @@ final class MeetingMonitorTests: XCTestCase {
 
     // MARK: - Preview Scenarios (Smoke Tests)
 
-    func testPreviewStartingWithVideoTriggersOverlay() {
+    func testPreviewStartingWithVideoTriggersStartOverlay() {
         let monitor = makeMonitor(events: [])
         monitor.previewStartingWithVideo()
-        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay")
+        XCTAssertTrue(monitor.shouldShowOverlay, "Starts in... should trigger start overlay")
         XCTAssertEqual(monitor.activeOverlayKind, .start)
         XCTAssertEqual(monitor.activeOverlayEvent?.title, "Team Standup")
         XCTAssertNotNil(monitor.activeOverlayEvent?.videoLink)
     }
 
-    func testPreviewStartedTriggersInProgressOverlay() {
+    func testPreviewStartedTriggersStartOverlay() {
         let monitor = makeMonitor(events: [])
         monitor.previewStarted()
-        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay for in-progress meeting")
+        XCTAssertTrue(monitor.shouldShowOverlay, "Started should trigger start overlay")
         XCTAssertEqual(monitor.activeOverlayKind, .start)
         XCTAssertEqual(monitor.activeOverlayEvent?.title, "All Hands")
     }
 
-    func testPreviewEndingTriggersInProgressOverlay() {
+    func testPreviewEndingTriggersEndReminder() {
         let monitor = makeMonitor(events: [])
-        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
         monitor.previewEnding()
-        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay for in-progress meeting")
-        XCTAssertEqual(monitor.activeOverlayKind, .start, "In-progress meetings show start overlay first")
+        XCTAssertTrue(monitor.shouldShowOverlay, "Ends in... should trigger end reminder overlay")
+        XCTAssertEqual(monitor.activeOverlayKind, .ending, "Should show end reminder for ending meeting")
         XCTAssertEqual(monitor.activeOverlayEvent?.title, "Design Review")
     }
 
     func testPreviewEndedDoesNotTrigger() {
         let monitor = makeMonitor(events: [])
-        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
         monitor.previewEnded()
-        XCTAssertFalse(monitor.shouldShowOverlay, "Preview should not trigger for already-ended meeting")
+        XCTAssertFalse(monitor.shouldShowOverlay, "Ended should not trigger overlay")
     }
 
-    func testPreviewStartingRequiredTriggersOverlay() {
+    func testPreviewStartingRequiredTriggersEndingOverlay() {
         let monitor = makeMonitor(events: [])
         monitor.previewStartingRequired()
-        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay")
-        XCTAssertEqual(monitor.activeOverlayKind, .start)
+        XCTAssertTrue(monitor.shouldShowOverlay, "Requires Action should trigger overlay")
+        XCTAssertEqual(monitor.activeOverlayKind, .ending, "Should show ending overlay for requireAction preview")
         XCTAssertEqual(monitor.activeOverlayEvent?.title, "1:1 Sync")
     }
 
