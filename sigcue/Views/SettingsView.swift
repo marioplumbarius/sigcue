@@ -100,15 +100,13 @@ struct SettingsView: View {
                     }
             }
 
-            Section {
+            Section("Preview") {
                 Button {
                     meetingMonitor.previewOverlay()
                 } label: {
-                    Label("Preview overlay", systemImage: "play.circle")
+                    Label("Example", systemImage: "play.circle")
                 }
-            }
 
-            Section("Preview use cases") {
                 Button {
                     meetingMonitor.previewStartingWithVideo()
                 } label: {
@@ -118,14 +116,14 @@ struct SettingsView: View {
                 Button {
                     meetingMonitor.previewEnding()
                 } label: {
-                    Label("Meeting Ending", systemImage: "checkmark.circle")
+                    Label("Ending", systemImage: "checkmark.circle")
                 }
 
                 Button {
                     UserDefaults.standard.set(true, forKey: "requireAction")
                     meetingMonitor.previewStartingRequired()
                 } label: {
-                    Label("Requires Action (Red)", systemImage: "exclamationmark.circle.fill")
+                    Label("Requires Action", systemImage: "exclamationmark.circle.fill")
                 }
             }
 
