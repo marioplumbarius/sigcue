@@ -81,7 +81,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 16)
-                            .background(requireAction ? Color(red: 0.95, green: 0.1, blue: 0.1) : Color(red: 0.13, green: 0.70, blue: 0.42))
+                            .background(joinButtonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .buttonStyle(OverlayButtonStyle())
@@ -106,7 +106,7 @@ struct OverlayView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 14)
-                            .background(Color(red: 0.95, green: 0.75, blue: 0.1))
+                            .background(snoozeButtonColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         }
                         .menuStyle(.borderlessButton)
@@ -251,15 +251,36 @@ struct OverlayView: View {
         }
     }
 
+    private var desiredActionColor: Color {
+        Color(red: 0.13, green: 0.70, blue: 0.42)
+    }
+
+    private var secondaryActionColor: Color {
+        Color.white.opacity(0.2)
+    }
+
+    private var joinButtonColor: Color {
+        switch kind {
+        case .start:
+            return desiredActionColor
+        case .ending:
+            return secondaryActionColor
+        }
+    }
+
+    private var snoozeButtonColor: Color {
+        desiredActionColor
+    }
+
     private var dismissButtonColor: Color {
         if requireAction {
-            return Color(red: 0.95, green: 0.1, blue: 0.1)
+            return desiredActionColor
         }
         switch kind {
         case .start:
-            return Color(red: 0.95, green: 0.1, blue: 0.1)
+            return secondaryActionColor
         case .ending:
-            return Color(red: 0.2, green: 0.6, blue: 1.0)
+            return desiredActionColor
         }
     }
 
