@@ -24,6 +24,20 @@ struct OverlayView: View {
                 .fill(currentBackground)
 
             VStack(spacing: 24) {
+                // Close button (emergency dismiss)
+                HStack {
+                    Spacer()
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.white.opacity(0.6))
+                            .padding(8)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(20)
+
                 Spacer()
 
                 // Icon (decorative)

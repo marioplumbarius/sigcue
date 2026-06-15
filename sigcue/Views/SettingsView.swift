@@ -102,24 +102,28 @@ struct SettingsView: View {
 
             Section("Preview") {
                 Button {
+                    UserDefaults.standard.set(false, forKey: "requireAction")
                     meetingMonitor.previewStartingWithVideo()
                 } label: {
                     Label("Starts in...", systemImage: "video.fill")
                 }
 
                 Button {
+                    UserDefaults.standard.set(false, forKey: "requireAction")
                     meetingMonitor.previewStarted()
                 } label: {
                     Label("Started", systemImage: "play.fill")
                 }
 
                 Button {
+                    UserDefaults.standard.set(false, forKey: "requireAction")
                     meetingMonitor.previewEnding()
                 } label: {
                     Label("Ends in...", systemImage: "hourglass.bottomhalf.filled")
                 }
 
                 Button {
+                    UserDefaults.standard.set(false, forKey: "requireAction")
                     meetingMonitor.previewEnded()
                 } label: {
                     Label("Ended", systemImage: "checkmark.circle.fill")
