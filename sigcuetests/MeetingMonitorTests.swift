@@ -223,6 +223,49 @@ final class MeetingMonitorTests: XCTestCase {
         XCTAssertEqual(monitor.activeOverlayKind, .start)
     }
 
+    // MARK: - Preview Scenarios (Smoke Tests)
+
+    func testPreviewStartingWithVideoTriggersOverlay() {
+        let monitor = makeMonitor(events: [])
+        monitor.previewStartingWithVideo()
+        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay")
+        XCTAssertEqual(monitor.activeOverlayKind, .start)
+        XCTAssertEqual(monitor.activeOverlayEvent?.title, "Team Standup")
+        XCTAssertNotNil(monitor.activeOverlayEvent?.videoLink)
+    }
+
+    func testPreviewStartedTriggersInProgressOverlay() {
+        let monitor = makeMonitor(events: [])
+        monitor.previewStarted()
+        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay for in-progress meeting")
+        XCTAssertEqual(monitor.activeOverlayKind, .start)
+        XCTAssertEqual(monitor.activeOverlayEvent?.title, "All Hands")
+    }
+
+    func testPreviewEndingTriggersInProgressOverlay() {
+        let monitor = makeMonitor(events: [])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.previewEnding()
+        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay for in-progress meeting")
+        XCTAssertEqual(monitor.activeOverlayKind, .start, "In-progress meetings show start overlay first")
+        XCTAssertEqual(monitor.activeOverlayEvent?.title, "Design Review")
+    }
+
+    func testPreviewEndedDoesNotTrigger() {
+        let monitor = makeMonitor(events: [])
+        UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+        monitor.previewEnded()
+        XCTAssertFalse(monitor.shouldShowOverlay, "Preview should not trigger for already-ended meeting")
+    }
+
+    func testPreviewStartingRequiredTriggersOverlay() {
+        let monitor = makeMonitor(events: [])
+        monitor.previewStartingRequired()
+        XCTAssertTrue(monitor.shouldShowOverlay, "Preview should trigger overlay")
+        XCTAssertEqual(monitor.activeOverlayKind, .start)
+        XCTAssertEqual(monitor.activeOverlayEvent?.title, "1:1 Sync")
+    }
+
     // MARK: - Require Action Feature Tests
 
     func testRequireActionAppStorageKey() {

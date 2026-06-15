@@ -96,9 +96,7 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Preview",
             videoLink: URL(string: "https://zoom.us/j/00000000000")
         )
-        activeOverlayKind = .start
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
     }
 
     func previewStartingWithVideo() {
@@ -111,9 +109,7 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Work",
             videoLink: URL(string: "https://meet.google.com/abc-defg-hij")
         )
-        activeOverlayKind = .start
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
     }
 
     func previewStarted() {
@@ -126,9 +122,7 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Work",
             videoLink: URL(string: "https://zoom.us/j/98765432100")
         )
-        activeOverlayKind = .start
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
     }
 
     func previewEnding() {
@@ -141,9 +135,7 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Work",
             videoLink: nil
         )
-        activeOverlayKind = .ending
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
     }
 
     func previewEnded() {
@@ -156,9 +148,7 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Work",
             videoLink: nil
         )
-        activeOverlayKind = .ending
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
     }
 
     func previewStartingRequired() {
@@ -171,9 +161,23 @@ final class MeetingMonitor: ObservableObject {
             calendar: "Work",
             videoLink: URL(string: "https://zoom.us/j/12345678901")
         )
-        activeOverlayKind = .start
-        activeOverlayEvent = event
-        shouldShowOverlay = true
+        showPreviewOverlay(with: event)
+    }
+
+    private func showPreviewOverlay(with event: MeetingEvent) {
+        class PreviewCalendarService: CalendarServiceProtocol {
+            let events: [MeetingEvent]
+            init(events: [MeetingEvent]) { self.events = events }
+        }
+
+        let mockService = PreviewCalendarService(events: [event])
+        let tempMonitor = MeetingMonitor(calendarService: mockService)
+
+        tempMonitor.checkUpcomingMeetings()
+
+        activeOverlayEvent = tempMonitor.activeOverlayEvent
+        activeOverlayKind = tempMonitor.activeOverlayKind
+        shouldShowOverlay = tempMonitor.shouldShowOverlay
     }
 
     func joinMeeting() {
