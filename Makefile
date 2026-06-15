@@ -1,4 +1,4 @@
-.PHONY: build install clean test help dev release uninstall
+.PHONY: build install clean test help dev release uninstall lint package setup-git-hooks
 
 SCHEME := sigcue
 PROJECT := sigcue.xcodeproj
@@ -10,6 +10,9 @@ INSTALLED_APP := $(APPS_DIR)/$(APP_NAME)
 
 # Default configuration
 CONFIG ?= Debug
+
+# Automatically set up git hooks on first run
+_setup_hooks := $(shell git config core.hooksPath >/dev/null 2>&1 || git config core.hooksPath .githooks)
 
 # Display available targets and usage information
 help:
@@ -103,6 +106,11 @@ lint:
 		brew install swiftlint; \
 	fi
 	swiftlint
+
+# Set up git hooks for development
+setup-git-hooks:
+	@git config core.hooksPath .githooks
+	@echo "✓ Git hooks configured"
 
 # Package the Release build into a distributable zip file
 package: build-release

@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+echo "Running pre-commit checks..."
+
+# Run linter
+echo "▪ Linting..."
+make lint || { echo "✗ Lint failed"; exit 1; }
+
+# Run tests
+echo "▪ Testing..."
+make test || { echo "✗ Tests failed"; exit 1; }
+
+echo "✓ Pre-commit checks passed"
