@@ -6,11 +6,19 @@ extension Notification.Name {
     static let focusCountdownResetPosition = Notification.Name("focusCountdownResetPosition")
 }
 
+enum UrgencyColor: String {
+    case green
+    case yellow
+    case red
+}
+
 @MainActor
 final class FocusCountdownService: ObservableObject {
     @Published private(set) var nextEvent: MeetingEvent?
     @Published private(set) var remaining: TimeInterval = 0
     @Published private(set) var initialRemaining: TimeInterval = 0
+    @Published private(set) var urgencyColor: UrgencyColor = .green
+    @Published private(set) var currentOpacity: Double = 1.0
 
     private let calendarService: any CalendarServiceProtocol
     private var timer: Timer?
@@ -80,6 +88,44 @@ final class FocusCountdownService: ObservableObject {
 
         nextEvent = target
         remaining = max(0, targetDate?.timeIntervalSince(now) ?? 0)
+
+        updateUrgency()
+    }
+
+    private func updateUrgency() {
+        let now = Date()
+        guard let target = nextEvent else {
+            urgencyColor = .green
+            currentOpacity = 1.0
+            return
+        }
+
+        let isOngoing = target.startDate <= now && target.endDate > now
+        let targetTime = isOngoing ? target.endDate : target.startDate
+        let timeUntilTarget = targetTime.timeIntervalSince(now)
+        let minutesUntil = timeUntilTarget / 60
+
+        // Color transitions: green → yellow at 10 min, yellow → red at 5 min
+        if minutesUntil <= 5 {
+            urgencyColor = .red
+        } else if minutesUntil <= 10 {
+            urgencyColor = .yellow
+        } else {
+            urgencyColor = .green
+        }
+
+        // Opacity decreases as deadline approaches using notification threshold
+        let notificationMinutes = Double(UserDefaults.standard.integer(forKey: "reminderMinutes"))
+        if isOngoing {
+            // For ongoing meetings, fade in based on minutes until end
+            let notificationEnd = Double(UserDefaults.standard.integer(forKey: "endReminderMinutes"))
+            let fadeStartMinutes = max(notificationEnd, 1)
+            currentOpacity = max(0.2, min(1.0, minutesUntil / fadeStartMinutes))
+        } else {
+            // For upcoming meetings, fade in based on minutes until start
+            let fadeStartMinutes = max(notificationMinutes, 1)
+            currentOpacity = max(0.2, min(1.0, minutesUntil / fadeStartMinutes))
+        }
     }
 }
 

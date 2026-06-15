@@ -126,6 +126,30 @@ final class FocusCountdownWindowController: NSObject, NSWindowDelegate {
     }
 }
 
+extension UrgencyColor {
+    var swiftUIColor: Color {
+        switch self {
+        case .green:
+            return Color.green
+        case .yellow:
+            return Color.yellow
+        case .red:
+            return Color.red
+        }
+    }
+
+    var terminalPhosphorColor: Color {
+        switch self {
+        case .green:
+            return Color(red: 0.30, green: 1.0, blue: 0.45)
+        case .yellow:
+            return Color(red: 1.0, green: 1.0, blue: 0.3)
+        case .red:
+            return Color(red: 1.0, green: 0.3, blue: 0.3)
+        }
+    }
+}
+
 enum FocusCountdownLayout: String, CaseIterable, Identifiable {
     case modern
     case terminal
@@ -149,6 +173,8 @@ struct FocusCountdownView: View {
     @ObservedObject var service: FocusCountdownService
     @AppStorage(FocusCountdownLayout.storageKey)
     private var layoutRaw: String = FocusCountdownLayout.defaultLayout.rawValue
+    @AppStorage("focusCountdownOpacity")
+    private var baseOpacity: Double = 1.0
 
     private var layout: FocusCountdownLayout {
         FocusCountdownLayout(rawValue: layoutRaw) ?? .modern
@@ -165,15 +191,19 @@ struct FocusCountdownView: View {
             subtitle = "No meetings"
         }
 
+        let opacity = baseOpacity * service.currentOpacity
+        let color = service.urgencyColor
+
         return Group {
             switch layout {
-            case .modern: ModernDigitalView(time: time, subtitle: subtitle)
-            case .terminal: TerminalDigitalView(time: time, subtitle: subtitle)
-            case .flip: FlipDigitalView(time: time, subtitle: subtitle)
+            case .modern: ModernDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
+            case .terminal: TerminalDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
+            case .flip: FlipDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(4)
+        .opacity(opacity)
     }
 
     static func formatted(_ seconds: TimeInterval) -> String {
@@ -194,6 +224,7 @@ struct FocusCountdownView: View {
 struct ModernDigitalView: View {
     let time: String
     let subtitle: String
+    let urgencyColor: UrgencyColor
 
     var body: some View {
         GeometryReader { geo in
@@ -210,7 +241,7 @@ struct ModernDigitalView: View {
                     Text(time)
                         .font(.system(size: max(14, h * 0.46), weight: .semibold, design: .rounded))
                         .monospacedDigit()
-                        .foregroundColor(.primary)
+                        .foregroundColor(urgencyColor.swiftUIColor)
                         .lineLimit(1)
                         .minimumScaleFactor(0.4)
                     Text(subtitle)
@@ -229,6 +260,7 @@ struct ModernDigitalView: View {
 struct TerminalDigitalView: View {
     let time: String
     let subtitle: String
+    let urgencyColor: UrgencyColor
 
     private static let phosphor = Color(red: 0.30, green: 1.0, blue: 0.45)
 
@@ -236,12 +268,13 @@ struct TerminalDigitalView: View {
         GeometryReader { geo in
             let h = geo.size.height
             let w = geo.size.width
+            let displayColor = urgencyColor.terminalPhosphorColor
             ZStack {
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
                     .fill(Color.black)
                     .overlay(
                         RoundedRectangle(cornerRadius: 6, style: .continuous)
-                            .stroke(Self.phosphor.opacity(0.45), lineWidth: 1)
+                            .stroke(displayColor.opacity(0.45), lineWidth: 1)
                     )
 
                 // Subtle scanlines.
@@ -252,7 +285,7 @@ struct TerminalDigitalView: View {
                         var p = Path()
                         p.move(to: CGPoint(x: 0, y: y))
                         p.addLine(to: CGPoint(x: size.width, y: y))
-                        ctx.stroke(p, with: .color(Self.phosphor.opacity(0.05)),
+                        ctx.stroke(p, with: .color(displayColor.opacity(0.05)),
                                    lineWidth: 0.5)
                         y += lineSpacing
                     }
@@ -263,13 +296,13 @@ struct TerminalDigitalView: View {
                 VStack(alignment: .leading, spacing: max(1, h * 0.03)) {
                     Text("> \(time)")
                         .font(.system(size: max(14, h * 0.44), weight: .regular, design: .monospaced))
-                        .foregroundColor(Self.phosphor)
-                        .shadow(color: Self.phosphor.opacity(0.7), radius: max(2, h * 0.05))
+                        .foregroundColor(displayColor)
+                        .shadow(color: displayColor.opacity(0.7), radius: max(2, h * 0.05))
                         .lineLimit(1)
                         .minimumScaleFactor(0.3)
                     Text(subtitle.uppercased())
                         .font(.system(size: max(8, h * 0.15), design: .monospaced))
-                        .foregroundColor(Self.phosphor.opacity(0.78))
+                        .foregroundColor(displayColor.opacity(0.78))
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
@@ -283,6 +316,7 @@ struct TerminalDigitalView: View {
 struct FlipDigitalView: View {
     let time: String
     let subtitle: String
+    let urgencyColor: UrgencyColor
 
     var body: some View {
         GeometryReader { geo in
@@ -305,6 +339,8 @@ struct FlipDigitalView: View {
             let cardW = cardH * 0.62
             let colonW = cardH * 0.28
 
+            let displayColor = urgencyColor.swiftUIColor
+
             ZStack {
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(Color(white: 0.08))
@@ -315,7 +351,7 @@ struct FlipDigitalView: View {
                             if ch == ":" {
                                 Text(":")
                                     .font(.system(size: cardH * 0.7, weight: .bold, design: .monospaced))
-                                    .foregroundColor(.white.opacity(0.85))
+                                    .foregroundColor(displayColor.opacity(0.85))
                                     .frame(width: colonW, height: cardH)
                             } else {
                                 ZStack {
@@ -323,9 +359,9 @@ struct FlipDigitalView: View {
                                         .fill(Color(white: 0.16))
                                     Text(String(ch))
                                         .font(.system(size: cardH * 0.72, weight: .bold, design: .monospaced))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(displayColor)
                                     Rectangle()
-                                        .fill(Color.black.opacity(0.55))
+                                        .fill(displayColor.opacity(0.55))
                                         .frame(height: 1)
                                 }
                                 .frame(width: cardW, height: cardH)

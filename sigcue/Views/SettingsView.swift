@@ -13,6 +13,7 @@ struct SettingsView: View {
     @AppStorage(WorkingHoursEvents.daysKey) private var workingHoursDaysMask: Int = WorkingHoursEvents.defaultDaysMask
     @AppStorage(FocusCountdownCoordinator.enabledKey) private var focusCountdownEnabled: Bool = false
     @AppStorage(FocusCountdownLayout.storageKey) private var focusCountdownLayout: String = FocusCountdownLayout.defaultLayout.rawValue
+    @AppStorage("focusCountdownOpacity") private var focusCountdownOpacity: Double = 1.0
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
@@ -226,6 +227,24 @@ struct SettingsView: View {
 
             Divider()
 
+            Text("Opacity")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                Slider(value: $focusCountdownOpacity, in: 0.2...1.0, step: 0.05)
+                Text(String(format: "%.0f%%", focusCountdownOpacity * 100))
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(.secondary)
+                    .frame(width: 40)
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Text("The countdown becomes more transparent as you approach the meeting, based on your notification threshold.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
             Text("Layout")
                 .font(.headline)
 
@@ -278,13 +297,13 @@ struct SettingsView: View {
 
             switch layout {
             case .modern:
-                ModernDigitalView(time: timeText, subtitle: subtitle)
+                ModernDigitalView(time: timeText, subtitle: subtitle, urgencyColor: .green)
                     .padding(4)
             case .terminal:
-                TerminalDigitalView(time: timeText, subtitle: subtitle)
+                TerminalDigitalView(time: timeText, subtitle: subtitle, urgencyColor: .green)
                     .padding(4)
             case .flip:
-                FlipDigitalView(time: timeText, subtitle: subtitle)
+                FlipDigitalView(time: timeText, subtitle: subtitle, urgencyColor: .green)
                     .padding(4)
             }
         }
