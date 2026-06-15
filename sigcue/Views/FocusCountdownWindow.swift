@@ -99,8 +99,8 @@ final class FocusCountdownWindowController: NSObject, NSWindowDelegate {
 
     private static func loadOrigin(for size: NSSize) -> NSPoint {
         if let saved = UserDefaults.standard.dictionary(forKey: positionKey) as? [String: Double],
-           let x = saved["x"], let y = saved["y"] {
-            let point = NSPoint(x: x, y: y)
+           let xCoord = saved["x"], let yCoord = saved["y"] {
+            let point = NSPoint(x: xCoord, y: yCoord)
             if NSScreen.screens.contains(where: { $0.frame.contains(point) }) {
                 return point
             }
@@ -125,9 +125,9 @@ final class FocusCountdownWindowController: NSObject, NSWindowDelegate {
 
     private static func loadSize() -> NSSize {
         if let saved = UserDefaults.standard.dictionary(forKey: sizeKey) as? [String: Double],
-           let w = saved["w"], let h = saved["h"] {
-            let clampedW = min(max(w, Double(minSize.width)), Double(maxSize.width))
-            let clampedH = min(max(h, Double(minSize.height)), Double(maxSize.height))
+           let width = saved["w"], let height = saved["h"] {
+            let clampedW = min(max(width, Double(minSize.width)), Double(maxSize.width))
+            let clampedH = min(max(height, Double(minSize.height)), Double(maxSize.height))
             return NSSize(width: clampedW, height: clampedH)
         }
         return defaultSize
