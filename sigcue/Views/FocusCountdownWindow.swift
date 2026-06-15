@@ -251,10 +251,14 @@ struct FocusCountdownView: View {
         } label: {
             if service.autoJoinTime != nil {
                 Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 18))
                     .foregroundColor(.green)
+                    .padding(8)
             } else {
                 Image(systemName: "arrow.right.circle")
+                    .font(.system(size: 18))
                     .foregroundColor(.secondary)
+                    .padding(8)
             }
         }
         .menuStyle(.borderlessButton)
