@@ -15,11 +15,11 @@ Unlike traditional apps that bury notifications inside passive trays, `sigcue` r
 
 ### Working Memory Deficit
 
-People with ADHD experience lower dopamine signaling in the prefrontal cortex, shrinking their mental workspace [1](https://www.adxs.org/en/page/150/organizational-and-executive-function-problems-in-adhd-neurophysiological-correlates). `sigcue` offloads temporary tracking tasks from your highly limited biological "RAM" into a persistent piece of external cognitive scaffolding [2](https://chadd.org/attention-article/remembering-the-future-how-adhd-affects-prospective-memory-and-how-to-work-with-it/).
+People with ADHD experience lower dopamine signaling in the prefrontal cortex, shrinking their mental workspace [[1]](https://www.adxs.org/en/page/150/organizational-and-executive-function-problems-in-adhd-neurophysiological-correlates). `sigcue` offloads temporary tracking tasks from your highly limited biological "RAM" into a persistent piece of external cognitive scaffolding [[2]](https://chadd.org/attention-article/remembering-the-future-how-adhd-affects-prospective-memory-and-how-to-work-with-it/).
 
 ### Time Blindness
 
-Chronic dysfunction in the dopamine-regulated timing circuit of the basal ganglia and cerebellum prevents ADHD brains from accurately reproducing or pacing time intervals [3](https://www.reachlink.com/advice/adhd/russell-barkley-time-blindness/). `sigcue` replaces weak internal chronological awareness with an active, ticking, color-coded countdown.
+Chronic dysfunction in the dopamine-regulated timing circuit of the basal ganglia and cerebellum prevents ADHD brains from accurately reproducing or pacing time intervals [[3]](https://www.reachlink.com/advice/adhd/russell-barkley-time-blindness/). `sigcue` replaces weak internal chronological awareness with an active, ticking, color-coded countdown.
 
 ### Synthetic Salience
 
