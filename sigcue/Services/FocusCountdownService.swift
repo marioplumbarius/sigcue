@@ -4,6 +4,7 @@ import Foundation
 
 extension Notification.Name {
     static let focusCountdownResetPosition = Notification.Name("focusCountdownResetPosition")
+    static let focusCountdownAutoJoin = Notification.Name("focusCountdownAutoJoin")
 }
 
 enum UrgencyColor: String {
@@ -20,6 +21,8 @@ final class FocusCountdownService: ObservableObject {
     @Published private(set) var urgencyColor: UrgencyColor = .green
     @Published private(set) var currentOpacity: Double = 1.0
     @Published private(set) var breathingPhase: Double = 0
+    @Published private(set) var autoJoinTime: Date?
+    @Published private(set) var hasAutoJoined: Bool = false
 
     private let calendarService: any CalendarServiceProtocol
     private var timer: Timer?
@@ -48,6 +51,18 @@ final class FocusCountdownService: ObservableObject {
     func stop() {
         timer?.invalidate()
         timer = nil
+    }
+
+    func setAutoJoin(inMinutes: Int) {
+        guard let event = nextEvent else { return }
+        let targetTime = event.startDate.addingTimeInterval(-Double(inMinutes) * 60)
+        autoJoinTime = targetTime
+        hasAutoJoined = false
+    }
+
+    func cancelAutoJoin() {
+        autoJoinTime = nil
+        hasAutoJoined = false
     }
 
     private func tick() {
@@ -92,7 +107,20 @@ final class FocusCountdownService: ObservableObject {
         nextEvent = target
         remaining = max(0, targetDate?.timeIntervalSince(now) ?? 0)
 
+        checkAutoJoin(now: now)
         updateUrgency()
+    }
+
+    private func checkAutoJoin(now: Date) {
+        guard !hasAutoJoined, let autoJoinTime = autoJoinTime, let event = nextEvent else { return }
+
+        if now >= autoJoinTime && event.videoLink != nil {
+            hasAutoJoined = true
+            NotificationCenter.default.post(
+                name: .focusCountdownAutoJoin,
+                object: event
+            )
+        }
     }
 
     private func updateUrgency() {

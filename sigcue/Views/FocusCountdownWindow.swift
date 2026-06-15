@@ -12,6 +12,7 @@ final class FocusCountdownWindowController: NSObject, NSWindowDelegate {
 
     private var panel: NSPanel?
     private var resetObserver: Any?
+    private var autoJoinObserver: Any?
 
     func show(service: FocusCountdownService) {
         guard panel == nil else { return }
@@ -49,6 +50,16 @@ final class FocusCountdownWindowController: NSObject, NSWindowDelegate {
         ) { [weak self] _ in
             Task { @MainActor in self?.resetToDefaultPosition() }
         }
+
+        autoJoinObserver = NotificationCenter.default.addObserver(
+            forName: .focusCountdownAutoJoin,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            if let event = notification.object as? MeetingEvent, let videoLink = event.videoLink {
+                NSWorkspace.shared.open(videoLink)
+            }
+        }
     }
 
     func close() {
@@ -61,6 +72,10 @@ final class FocusCountdownWindowController: NSObject, NSWindowDelegate {
             NotificationCenter.default.removeObserver(resetObserver)
         }
         resetObserver = nil
+        if let autoJoinObserver {
+            NotificationCenter.default.removeObserver(autoJoinObserver)
+        }
+        autoJoinObserver = nil
     }
 
     func windowDidMove(_ notification: Notification) {
@@ -175,6 +190,7 @@ struct FocusCountdownView: View {
     private var layoutRaw: String = FocusCountdownLayout.defaultLayout.rawValue
     @AppStorage("focusCountdownOpacity")
     private var baseOpacity: Double = 0.2
+    @State private var showAutoJoinMenu = false
 
     private var layout: FocusCountdownLayout {
         FocusCountdownLayout(rawValue: layoutRaw) ?? .modern
@@ -200,16 +216,49 @@ struct FocusCountdownView: View {
             opacity = opacity * (1 - breathingIntensity + service.breathingPhase * breathingIntensity)
         }
 
-        return Group {
-            switch layout {
-            case .modern: ModernDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
-            case .terminal: TerminalDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
-            case .flip: FlipDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
+        return ZStack(alignment: .topTrailing) {
+            Group {
+                switch layout {
+                case .modern: ModernDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
+                case .terminal: TerminalDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
+                case .flip: FlipDigitalView(time: time, subtitle: subtitle, urgencyColor: color)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            if service.nextEvent?.videoLink != nil {
+                autoJoinButton
+                    .padding(6)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(4)
         .opacity(opacity)
+    }
+
+    private var autoJoinButton: some View {
+        Menu {
+            if service.autoJoinTime != nil {
+                Button("Cancel Auto-Join", systemImage: "xmark.circle") {
+                    service.cancelAutoJoin()
+                }
+            } else {
+                ForEach([1, 2, 5, 10], id: \.self) { minutes in
+                    Button("Auto-join in \(minutes) min") {
+                        service.setAutoJoin(inMinutes: minutes)
+                    }
+                }
+            }
+        } label: {
+            if service.autoJoinTime != nil {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.green)
+            } else {
+                Image(systemName: "arrow.right.circle")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .menuStyle(.borderlessButton)
+        .fixedSize()
     }
 
     static func formatted(_ seconds: TimeInterval) -> String {
