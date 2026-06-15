@@ -1,5 +1,5 @@
 import XCTest
-@testable import MeetingReminder
+@testable import sigcue
 
 final class MeetingEventTests: XCTestCase {
 

@@ -2,7 +2,7 @@ import Combine
 import SwiftUI
 
 @main
-struct MeetingReminderApp: App {
+struct SigCueApp: App {
     @StateObject private var calendarService = CalendarService()
     @StateObject private var meetingMonitor: MeetingMonitor
     @StateObject private var overlayCoordinator: OverlayCoordinator
@@ -35,7 +35,7 @@ struct MeetingReminderApp: App {
                 }
             }
         } label: {
-            Label("Meeting Reminder", systemImage: "calendar.badge.clock")
+            Label("sigcue", systemImage: "calendar.badge.clock")
         }
         .menuBarExtraStyle(.window)
 
