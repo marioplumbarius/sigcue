@@ -144,11 +144,11 @@ final class MeetingMonitor: ObservableObject {
             id: "preview-ended-\(now.timeIntervalSince1970)",
             title: "Sprint Planning",
             startDate: now.addingTimeInterval(-62 * 60),
-            endDate: now.addingTimeInterval(-2 * 60),
+            endDate: now.addingTimeInterval(-1 * 60),
             calendar: "Work",
             videoLink: nil
         )
-        showPreviewOverlay(with: event)
+        showPreviewOverlay(with: event, skipStartReminder: true)
     }
 
     func previewStartingRequired() {
@@ -176,6 +176,7 @@ final class MeetingMonitor: ObservableObject {
         if skipStartReminder {
             tempMonitor.shownEventIDs.insert(event.id)
             UserDefaults.standard.set(2, forKey: "endReminderMinutes")
+            tempMonitor.endReminderSnoozes[event.id] = Date().addingTimeInterval(-60)
         }
 
         tempMonitor.checkUpcomingMeetings()

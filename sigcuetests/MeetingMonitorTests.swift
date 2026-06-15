@@ -250,10 +250,12 @@ final class MeetingMonitorTests: XCTestCase {
         XCTAssertEqual(monitor.activeOverlayEvent?.title, "Design Review")
     }
 
-    func testPreviewEndedDoesNotTrigger() {
+    func testPreviewEndedTriggersAcknowledgeOverlay() {
         let monitor = makeMonitor(events: [])
         monitor.previewEnded()
-        XCTAssertFalse(monitor.shouldShowOverlay, "Ended should not trigger overlay")
+        XCTAssertTrue(monitor.shouldShowOverlay, "Ended should trigger ending overlay with Acknowledge")
+        XCTAssertEqual(monitor.activeOverlayKind, .ending)
+        XCTAssertEqual(monitor.activeOverlayEvent?.title, "Sprint Planning")
     }
 
     func testPreviewStartingRequiredTriggersEndingOverlay() {
