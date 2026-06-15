@@ -13,14 +13,18 @@ struct SettingsView: View {
     @AppStorage(WorkingHoursEvents.daysKey) private var workingHoursDaysMask: Int = WorkingHoursEvents.defaultDaysMask
     @AppStorage(FocusCountdownCoordinator.enabledKey) private var focusCountdownEnabled: Bool = false
     @AppStorage(FocusCountdownLayout.storageKey) private var focusCountdownLayout: String = FocusCountdownLayout.defaultLayout.rawValue
+    @AppStorage("focusCountdownOpacity") private var focusCountdownOpacity: Double = 0.2
+    @AppStorage("breathingSpeed") private var breathingSpeed: Int = 60
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
     @State private var launchAtLogin = false
     @State private var enabledCalendarIDs: Set<String> = []
     @State private var snoozeOptions: Set<Int> = [1, 2, 5, 10]
+    @State private var joinOptions: Set<Int> = [1, 2, 5, 10]
 
     private let snoozeOptionCandidates = [1, 2, 5, 10, 15]
+    private let joinOptionCandidates = [1, 2, 5, 10]
 
     var body: some View {
         TabView {
@@ -49,7 +53,6 @@ struct SettingsView: View {
                     Label("Calendars", systemImage: "calendar")
                 }
         }
-        .frame(width: 460, height: 420)
         .onAppear {
             loadSettings()
         }
@@ -226,6 +229,130 @@ struct SettingsView: View {
 
             Divider()
 
+            Text("Opacity")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                Slider(value: $focusCountdownOpacity, in: 0.2...1.0, step: 0.05)
+                Text(String(format: "%.0f%%", focusCountdownOpacity * 100))
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(.secondary)
+                    .frame(width: 40)
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Text("The countdown becomes more transparent as you approach the meeting, based on your notification threshold.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
+            Text("Red Alert Breathing")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                Slider(value: Binding(
+                    get: { Double(breathingSpeed) },
+                    set: { breathingSpeed = Int($0) }
+                ), in: 30...120, step: 10)
+                Text("\(breathingSpeed) BPM")
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(.secondary)
+                    .frame(width: 60)
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Text("When the countdown turns red (≤5 min), it pulses at this breathing rate to signal urgency.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
+            Text("Quick Join Times")
+                .font(.headline)
+
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Button(action: { selectJoinPreset([1, 2]) }) {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Jump Right In")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("1 & 2 min—no buffer time")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if joinOptions == [1, 2] {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .padding(12)
+                        .background(joinOptions == [1, 2] ? Color.accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!focusCountdownEnabled)
+
+                    Button(action: { selectJoinPreset([2, 5, 10]) }) {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Balanced")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("2, 5 & 10 min—flexible timing")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if joinOptions == [2, 5, 10] {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .padding(12)
+                        .background(joinOptions == [2, 5, 10] ? Color.accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!focusCountdownEnabled)
+
+                    Button(action: { selectJoinPreset([1, 2, 5, 10]) }) {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("All Options")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("Every choice available")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if joinOptions == [1, 2, 5, 10] {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .padding(12)
+                        .background(joinOptions == [1, 2, 5, 10] ? Color.accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!focusCountdownEnabled)
+                }
+            }
+
+            Text("Choose when you want quick-join options to appear in meeting overlays.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
             Text("Layout")
                 .font(.headline)
 
@@ -278,13 +405,13 @@ struct SettingsView: View {
 
             switch layout {
             case .modern:
-                ModernDigitalView(time: timeText, subtitle: subtitle)
+                ModernDigitalView(time: timeText, subtitle: subtitle, urgencyColor: .green)
                     .padding(4)
             case .terminal:
-                TerminalDigitalView(time: timeText, subtitle: subtitle)
+                TerminalDigitalView(time: timeText, subtitle: subtitle, urgencyColor: .green)
                     .padding(4)
             case .flip:
-                FlipDigitalView(time: timeText, subtitle: subtitle)
+                FlipDigitalView(time: timeText, subtitle: subtitle, urgencyColor: .green)
                     .padding(4)
             }
         }
@@ -344,6 +471,7 @@ struct SettingsView: View {
         }
 
         loadSnoozeOptions()
+        loadJoinOptions()
     }
 
     private func loadSnoozeOptions() {
@@ -353,6 +481,15 @@ struct SettingsView: View {
 
     private func saveSnoozeOptions() {
         UserDefaults.standard.set(Array(snoozeOptions).sorted(), forKey: "snoozeOptions")
+    }
+
+    private func loadJoinOptions() {
+        let stored = UserDefaults.standard.array(forKey: "joinOptions") as? [Int] ?? []
+        joinOptions = stored.isEmpty ? [1, 2, 5, 10] : Set(stored)
+    }
+
+    private func saveJoinOptions() {
+        UserDefaults.standard.set(Array(joinOptions).sorted(), forKey: "joinOptions")
     }
 
     private func snoozeBinding(for minutes: Int) -> Binding<Bool> {
@@ -372,6 +509,30 @@ struct SettingsView: View {
 
     private func snoozeLabel(minutes: Int) -> String {
         minutes == 1 ? "1 minute" : "\(minutes) minutes"
+    }
+
+    private func joinBinding(for minutes: Int) -> Binding<Bool> {
+        Binding(
+            get: { joinOptions.contains(minutes) },
+            set: { enabled in
+                if enabled {
+                    joinOptions.insert(minutes)
+                } else {
+                    guard joinOptions.count > 1 else { return }
+                    joinOptions.remove(minutes)
+                }
+                saveJoinOptions()
+            }
+        )
+    }
+
+    private func joinLabel(minutes: Int) -> String {
+        minutes == 1 ? "Join in 1 min" : "Join in \(minutes) min"
+    }
+
+    private func selectJoinPreset(_ options: [Int]) {
+        joinOptions = Set(options)
+        saveJoinOptions()
     }
 
     private var orderedWeekdayIndices: [Int] {

@@ -42,6 +42,7 @@ struct SigCueApp: App {
         Settings {
             SettingsView(calendarService: calendarService, meetingMonitor: meetingMonitor)
         }
+        .windowStyle(.automatic)
     }
 }
 

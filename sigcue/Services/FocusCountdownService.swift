@@ -4,6 +4,13 @@ import Foundation
 
 extension Notification.Name {
     static let focusCountdownResetPosition = Notification.Name("focusCountdownResetPosition")
+    static let focusCountdownAutoJoin = Notification.Name("focusCountdownAutoJoin")
+}
+
+enum UrgencyColor: String {
+    case green
+    case yellow
+    case red
 }
 
 @MainActor
@@ -11,10 +18,16 @@ final class FocusCountdownService: ObservableObject {
     @Published private(set) var nextEvent: MeetingEvent?
     @Published private(set) var remaining: TimeInterval = 0
     @Published private(set) var initialRemaining: TimeInterval = 0
+    @Published private(set) var urgencyColor: UrgencyColor = .green
+    @Published private(set) var currentOpacity: Double = 1.0
+    @Published private(set) var breathingPhase: Double = 0
+    @Published private(set) var autoJoinTime: Date?
+    @Published private(set) var hasAutoJoined: Bool = false
 
     private let calendarService: any CalendarServiceProtocol
     private var timer: Timer?
     private var trackedKey: String?
+    private var startTime: Date = Date()
 
     init(calendarService: any CalendarServiceProtocol) {
         self.calendarService = calendarService
@@ -27,8 +40,9 @@ final class FocusCountdownService: ObservableObject {
     }
 
     func start() {
+        startTime = Date()
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
         tick()
@@ -37,6 +51,18 @@ final class FocusCountdownService: ObservableObject {
     func stop() {
         timer?.invalidate()
         timer = nil
+    }
+
+    func setAutoJoin(inMinutes: Int) {
+        guard let event = nextEvent else { return }
+        let targetTime = event.startDate.addingTimeInterval(-Double(inMinutes) * 60)
+        autoJoinTime = targetTime
+        hasAutoJoined = false
+    }
+
+    func cancelAutoJoin() {
+        autoJoinTime = nil
+        hasAutoJoined = false
     }
 
     private func tick() {
@@ -80,6 +106,71 @@ final class FocusCountdownService: ObservableObject {
 
         nextEvent = target
         remaining = max(0, targetDate?.timeIntervalSince(now) ?? 0)
+
+        checkAutoJoin(now: now)
+        updateUrgency()
+    }
+
+    private func checkAutoJoin(now: Date) {
+        guard !hasAutoJoined, let autoJoinTime = autoJoinTime, let event = nextEvent else { return }
+
+        if now >= autoJoinTime && event.videoLink != nil {
+            hasAutoJoined = true
+            NotificationCenter.default.post(
+                name: .focusCountdownAutoJoin,
+                object: event
+            )
+        }
+    }
+
+    private func updateUrgency() {
+        let now = Date()
+        guard let target = nextEvent else {
+            urgencyColor = .green
+            currentOpacity = 1.0
+            breathingPhase = 0
+            return
+        }
+
+        let isOngoing = target.startDate <= now && target.endDate > now
+        let targetTime = isOngoing ? target.endDate : target.startDate
+        let timeUntilTarget = targetTime.timeIntervalSince(now)
+        let minutesUntil = timeUntilTarget / 60
+
+        // Color transitions: green → yellow at 10 min, yellow → red at 5 min
+        let isRed = minutesUntil <= 5
+        if isRed {
+            urgencyColor = .red
+        } else if minutesUntil <= 10 {
+            urgencyColor = .yellow
+        } else {
+            urgencyColor = .green
+        }
+
+        // Opacity decreases as deadline approaches using notification threshold
+        let notificationMinutes = Double(UserDefaults.standard.integer(forKey: "reminderMinutes"))
+        if isOngoing {
+            // For ongoing meetings, fade in based on minutes until end
+            let notificationEnd = Double(UserDefaults.standard.integer(forKey: "endReminderMinutes"))
+            let fadeStartMinutes = max(notificationEnd, 1)
+            currentOpacity = max(0.2, min(1.0, minutesUntil / fadeStartMinutes))
+        } else {
+            // For upcoming meetings, fade in based on minutes until start
+            let fadeStartMinutes = max(notificationMinutes, 1)
+            currentOpacity = max(0.2, min(1.0, minutesUntil / fadeStartMinutes))
+        }
+
+        // Calculate breathing effect when red
+        if isRed {
+            let breathingSpeed = Double(UserDefaults.standard.integer(forKey: "breathingSpeed"))
+            let speedValue = breathingSpeed > 0 ? breathingSpeed : 1.0
+            let elapsed = now.timeIntervalSince(startTime)
+            let cycleDuration = 60.0 / speedValue // Convert BPM to seconds per breath
+            let cyclePosition = elapsed.truncatingRemainder(dividingBy: cycleDuration) / cycleDuration
+            breathingPhase = sin(cyclePosition * .pi * 2) * 0.5 + 0.5
+        } else {
+            breathingPhase = 0
+        }
     }
 }
 

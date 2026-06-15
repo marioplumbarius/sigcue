@@ -89,29 +89,56 @@ struct OverlayView: View {
                     }
 
                     if showSnoozeMenu {
-                        Menu {
-                            ForEach(availableSnoozeOptions, id: \.self) { minutes in
-                                Button(snoozeLabel(minutes: minutes)) {
-                                    onSnooze(minutes)
+                        if kind == .start && event.videoLink != nil {
+                            let joinOptions = getJoinOptions()
+                            Menu {
+                                ForEach(joinOptions.sorted(), id: \.self) { minutes in
+                                    Button("Join in \(minutes) min") {
+                                        onSnooze(minutes)
+                                    }
                                 }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "arrow.right.circle")
+                                    Text("Join In...")
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.system(size: 11, weight: .medium))
+                                }
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 14)
+                                .background(snoozeButtonColor)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             }
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "clock.arrow.circlepath")
-                                Text("Snooze")
-                                Image(systemName: "chevron.up.chevron.down")
-                                    .font(.system(size: 11, weight: .medium))
+                            .menuStyle(.borderlessButton)
+                            .fixedSize()
+                            .buttonStyle(OverlayButtonStyle())
+                        } else if kind == .ending {
+                            Menu {
+                                ForEach(availableSnoozeOptions, id: \.self) { minutes in
+                                    Button(snoozeLabel(minutes: minutes)) {
+                                        onSnooze(minutes)
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "clock.arrow.circlepath")
+                                    Text("Snooze")
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.system(size: 11, weight: .medium))
+                                }
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 14)
+                                .background(snoozeButtonColor)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             }
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 14)
-                            .background(snoozeButtonColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .menuStyle(.borderlessButton)
+                            .fixedSize()
+                            .buttonStyle(OverlayButtonStyle())
                         }
-                        .menuStyle(.borderlessButton)
-                        .fixedSize()
-                        .buttonStyle(OverlayButtonStyle())
                     }
 
 
@@ -322,6 +349,11 @@ struct OverlayView: View {
                 }
             }
         }
+    }
+
+    private func getJoinOptions() -> [Int] {
+        let stored = UserDefaults.standard.array(forKey: "joinOptions") as? [Int] ?? []
+        return stored.isEmpty ? [1, 2, 5, 10] : stored
     }
 }
 
