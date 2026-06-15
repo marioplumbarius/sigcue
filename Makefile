@@ -1,4 +1,8 @@
-.PHONY: build install clean test help dev release uninstall lint package setup-git-hooks open
+.PHONY: help
+
+# ============================================================================
+# VARIABLES
+# ============================================================================
 
 SCHEME := sigcue
 PROJECT := sigcue.xcodeproj
@@ -13,6 +17,19 @@ CONFIG ?= Debug
 
 # Automatically set up git hooks on first run
 _setup_hooks := $(shell git config core.hooksPath >/dev/null 2>&1 || git config core.hooksPath .githooks)
+
+# ============================================================================
+# INCLUDES
+# ============================================================================
+
+include Makefile.build
+include Makefile.dev
+include Makefile.test
+include Makefile.clean
+
+# ============================================================================
+# HELP
+# ============================================================================
 
 help:
 	@echo "sigcue macOS App Build"
@@ -32,117 +49,3 @@ help:
 	@echo "Options:"
 	@echo "  CONFIG=Release  Use Release configuration (default: Debug)"
 	@echo ""
-
-# ============================================================================
-# BUILD TARGETS
-# ============================================================================
-
-build:
-	@echo "Building $(SCHEME) [$(CONFIG)]..."
-	xcodebuild \
-		-project $(PROJECT) \
-		-scheme $(SCHEME) \
-		-configuration $(CONFIG) \
-		-derivedDataPath $(BUILD_DIR) \
-		build
-
-# Builds Release variant; explicitly depends on build target
-build-release: CONFIG := Release
-build-release: build
-
-# Removes existing installation to prevent conflicts; locates built app via find to handle derivedData path variance
-install: build
-	@echo "Installing $(APP_NAME) to $(APPS_DIR)..."
-	@if [ -d "$(INSTALLED_APP)" ]; then \
-		echo "Removing existing installation..."; \
-		rm -rf "$(INSTALLED_APP)"; \
-	fi
-	@APP_PATH=$$(find $(BUILD_DIR) -name "$(APP_NAME)" -type d | head -1); \
-	if [ -z "$$APP_PATH" ]; then \
-		echo "Error: Failed to find built app"; \
-		exit 1; \
-	fi; \
-	echo "Copying from $$APP_PATH"; \
-	cp -R "$$APP_PATH" "$(APPS_DIR)/"
-	@echo "✓ Installation complete"
-	@echo "  Run with: open $(INSTALLED_APP)"
-
-# Only packages Release builds (Debug is for local development, not distribution)
-package: build-release
-	@echo "Packaging $(APP_NAME)..."
-	@mkdir -p release-assets
-	@APP_PATH=$$(find $(BUILD_DIR) -name "$(APP_NAME)" -type d | head -1); \
-	if [ -z "$$APP_PATH" ]; then \
-		echo "Error: Failed to find built app"; \
-		exit 1; \
-	fi; \
-	cp -R "$$APP_PATH" release-assets/
-	@cd release-assets && zip -r ../sigcue.zip sigcue.app
-	@echo "✓ Package created: sigcue.zip"
-
-# ============================================================================
-# CONVENIENCE SHORTCUTS FOR LOCAL DEVELOPMENT
-# ============================================================================
-
-# Debug variant: fast iteration during development; includes debug symbols and skips optimizations
-dev: CONFIG := Debug
-dev: install
-
-# Release variant: optimized build for distribution testing and performance validation before shipping
-release: CONFIG := Release
-release: install
-
-# Launch the installed app
-open:
-	@if [ -d "$(INSTALLED_APP)" ]; then \
-		open "$(INSTALLED_APP)"; \
-	else \
-		echo "Error: $(APP_NAME) not found in $(APPS_DIR)"; \
-		exit 1; \
-	fi
-
-# ============================================================================
-# DEVELOPMENT TOOLS
-# ============================================================================
-
-test:
-	@echo "Running tests..."
-	xcodebuild \
-		-project $(PROJECT) \
-		-scheme $(SCHEME) \
-		-derivedDataPath $(BUILD_DIR) \
-		test
-
-# Uses SwiftLint for style enforcement; auto-installs via Homebrew if missing
-lint:
-	@echo "Running SwiftLint..."
-	@if ! command -v swiftlint &> /dev/null; then \
-		brew install swiftlint; \
-	fi
-	swiftlint
-
-# Auto-invoked on first Makefile call; stores hook path in git config so developers don't need manual setup
-setup-git-hooks:
-	@git config core.hooksPath .githooks
-	@echo "✓ Git hooks configured"
-
-# ============================================================================
-# CLEANUP
-# ============================================================================
-
-# Cleans both build artifacts and Xcode's derived data cache; derived data can cause stale rebuilds
-clean:
-	@echo "Cleaning build artifacts..."
-	rm -rf $(BUILD_DIR)
-	rm -rf $(DERIVED_DATA)/sigcue-*
-	@echo "✓ Clean complete"
-
-# Idempotent; succeeds silently if app not installed
-uninstall:
-	@echo "Uninstalling $(APP_NAME)..."
-	@if [ -d "$(INSTALLED_APP)" ]; then \
-		rm -rf "$(INSTALLED_APP)"; \
-		echo "✓ Uninstalled"; \
-	else \
-		echo "$(APP_NAME) not found in $(APPS_DIR)"; \
-	fi
