@@ -42,9 +42,9 @@ build:
 		-derivedDataPath $(BUILD_DIR) \
 		build
 
-# Convenience wrapper; allows 'make build CONFIG=Release' or 'make build-release'
-build-release:
-	@$(MAKE) build CONFIG=Release
+# Builds Release variant; explicitly depends on build target
+build-release: CONFIG := Release
+build-release: build
 
 test:
 	@echo "Running tests..."
@@ -71,13 +71,13 @@ install: build
 	@echo "✓ Installation complete"
 	@echo "  Run with: open $(INSTALLED_APP)"
 
-# Common shortcut for local development
-dev:
-	@$(MAKE) install CONFIG=Debug
+# Common shortcut for local development; explicitly depends on install target
+dev: CONFIG := Debug
+dev: install
 
-# Common shortcut for distribution/testing Release builds locally
-release:
-	@$(MAKE) install CONFIG=Release
+# Common shortcut for distribution/testing Release builds locally; explicitly depends on install target
+release: CONFIG := Release
+release: install
 
 # Cleans both build artifacts and Xcode's derived data cache; derived data can cause stale rebuilds
 clean:
