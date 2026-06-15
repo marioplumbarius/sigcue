@@ -259,7 +259,7 @@ struct OverlayView: View {
         case .start:
             return Color(red: 0.95, green: 0.1, blue: 0.1)
         case .ending:
-            return Color(red: 0.13, green: 0.70, blue: 0.42)
+            return Color(red: 0.2, green: 0.6, blue: 1.0)
         }
     }
 
