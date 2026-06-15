@@ -75,23 +75,6 @@ struct OverlayView: View {
                         .keyboardShortcut(.return, modifiers: [])
                     }
 
-
-                    if showQuickSnooze {
-                        Button(action: { onSnooze(availableSnoozeOptions.first ?? 1) }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "clock.arrow.circlepath")
-                                Text("Snooze \(availableSnoozeOptions.first ?? 1) min")
-                            }
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 14)
-                            .background(Color.white.opacity(0.2))
-                            .cornerRadius(12)
-                        }
-                        .buttonStyle(.plain)
-                    }
-
                     if showSnoozeMenu {
                         Menu {
                             ForEach(availableSnoozeOptions, id: \.self) { minutes in
@@ -222,16 +205,6 @@ struct OverlayView: View {
             // Offer the full configured snooze list, just like the start overlay.
             // The monitor caps any snooze that would run past the meeting's end.
             availableSnoozeOptions = snoozeOptions
-        }
-    }
-
-    private var showQuickSnooze: Bool {
-        guard !requireAction else { return false }
-        switch kind {
-        case .start:
-            return !availableSnoozeOptions.isEmpty
-        case .ending:
-            return !hasEnded && !availableSnoozeOptions.isEmpty
         }
     }
 
