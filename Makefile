@@ -14,7 +14,6 @@ CONFIG ?= Debug
 # Automatically set up git hooks on first run
 _setup_hooks := $(shell git config core.hooksPath >/dev/null 2>&1 || git config core.hooksPath .githooks)
 
-# Display available targets and usage information
 help:
 	@echo "sigcue macOS App Build"
 	@echo ""
@@ -34,7 +33,6 @@ help:
 	@echo "  CONFIG=Release  Use Release configuration (default: Debug)"
 	@echo ""
 
-# Build the app using the current CONFIG (default: Debug)
 build:
 	@echo "Building $(SCHEME) [$(CONFIG)]..."
 	xcodebuild \
@@ -44,11 +42,10 @@ build:
 		-derivedDataPath $(BUILD_DIR) \
 		build
 
-# Build the app in Release mode
+# Convenience wrapper; allows 'make build CONFIG=Release' or 'make build-release'
 build-release:
 	@$(MAKE) build CONFIG=Release
 
-# Run unit tests
 test:
 	@echo "Running tests..."
 	xcodebuild \
@@ -57,7 +54,7 @@ test:
 		-derivedDataPath $(BUILD_DIR) \
 		test
 
-# Build and install the app to /Applications
+# Removes existing installation to prevent conflicts; locates built app via find to handle derivedData path variance
 install: build
 	@echo "Installing $(APP_NAME) to $(APPS_DIR)..."
 	@if [ -d "$(INSTALLED_APP)" ]; then \
@@ -74,22 +71,22 @@ install: build
 	@echo "✓ Installation complete"
 	@echo "  Run with: open $(INSTALLED_APP)"
 
-# Build Debug version and install
+# Common shortcut for local development
 dev:
 	@$(MAKE) install CONFIG=Debug
 
-# Build Release version and install
+# Common shortcut for distribution/testing Release builds locally
 release:
 	@$(MAKE) install CONFIG=Release
 
-# Remove build artifacts
+# Cleans both build artifacts and Xcode's derived data cache; derived data can cause stale rebuilds
 clean:
 	@echo "Cleaning build artifacts..."
 	rm -rf $(BUILD_DIR)
 	rm -rf $(DERIVED_DATA)/sigcue-*
 	@echo "✓ Clean complete"
 
-# Remove the installed app from /Applications
+# Idempotent; succeeds silently if app not installed
 uninstall:
 	@echo "Uninstalling $(APP_NAME)..."
 	@if [ -d "$(INSTALLED_APP)" ]; then \
@@ -99,7 +96,7 @@ uninstall:
 		echo "$(APP_NAME) not found in $(APPS_DIR)"; \
 	fi
 
-# Run code style checks with SwiftLint
+# Uses SwiftLint for style enforcement; auto-installs via Homebrew if missing
 lint:
 	@echo "Running SwiftLint..."
 	@if ! command -v swiftlint &> /dev/null; then \
@@ -107,12 +104,12 @@ lint:
 	fi
 	swiftlint
 
-# Set up git hooks for development
+# Auto-invoked on first Makefile call; stores hook path in git config so developers don't need manual setup
 setup-git-hooks:
 	@git config core.hooksPath .githooks
 	@echo "✓ Git hooks configured"
 
-# Package the Release build into a distributable zip file
+# Only packages Release builds (Debug is for local development, not distribution)
 package: build-release
 	@echo "Packaging $(APP_NAME)..."
 	@mkdir -p release-assets
