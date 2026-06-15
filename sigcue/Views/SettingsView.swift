@@ -268,17 +268,86 @@ struct SettingsView: View {
 
             Divider()
 
-            Text("Join Options")
+            Text("Quick Join Times")
                 .font(.headline)
 
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(joinOptionCandidates, id: \.self) { minutes in
-                    Toggle(joinLabel(minutes: minutes), isOn: joinBinding(for: minutes))
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Button(action: { selectJoinPreset([1, 2]) }) {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Jump Right In")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("1 & 2 min—no buffer time")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if joinOptions == [1, 2] {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .padding(12)
+                        .background(joinOptions == [1, 2] ? Color.accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!focusCountdownEnabled)
+
+                    Button(action: { selectJoinPreset([2, 5, 10]) }) {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Balanced")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("2, 5 & 10 min—flexible timing")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if joinOptions == [2, 5, 10] {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .padding(12)
+                        .background(joinOptions == [2, 5, 10] ? Color.accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!focusCountdownEnabled)
+
+                    Button(action: { selectJoinPreset([1, 2, 5, 10]) }) {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("All Options")
+                                    .font(.system(size: 13, weight: .semibold))
+                                    .foregroundColor(.primary)
+                                Text("Every choice available")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if joinOptions == [1, 2, 5, 10] {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .padding(12)
+                        .background(joinOptions == [1, 2, 5, 10] ? Color.accentColor.opacity(0.1) : Color.secondary.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!focusCountdownEnabled)
                 }
             }
-            .disabled(!focusCountdownEnabled)
 
-            Text("Quick options shown in 'Join In...' menu when starting a meeting.")
+            Text("Choose when you want quick-join options to appear in meeting overlays.")
                 .font(.caption)
                 .foregroundColor(.secondary)
 
@@ -459,6 +528,11 @@ struct SettingsView: View {
 
     private func joinLabel(minutes: Int) -> String {
         minutes == 1 ? "Join in 1 min" : "Join in \(minutes) min"
+    }
+
+    private func selectJoinPreset(_ options: [Int]) {
+        joinOptions = Set(options)
+        saveJoinOptions()
     }
 
     private var orderedWeekdayIndices: [Int] {
