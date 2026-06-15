@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>SigCue</string>
+	<string>sigcue</string>
 	<key>CFBundleDisplayName</key>
-	<string>SigCue</string>
+	<string>sigcue</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.sigcue.app</string>
 	<key>CFBundleVersion</key>
@@ -15,14 +15,14 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleExecutable</key>
-	<string>SigCue</string>
+	<string>sigcue</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSCalendarsUsageDescription</key>
-	<string>SigCue needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
+	<string>sigcue needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>SigCue needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
+	<string>sigcue needs access to your calendars to show upcoming meeting notifications and provide quick-join links for video conferences.</string>
 </dict>
 </plist>

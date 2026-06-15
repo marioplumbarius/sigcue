@@ -35,7 +35,7 @@ struct SigCueApp: App {
                 }
             }
         } label: {
-            Label("SigCue", systemImage: "calendar.badge.clock")
+            Label("sigcue", systemImage: "calendar.badge.clock")
         }
         .menuBarExtraStyle(.window)
 

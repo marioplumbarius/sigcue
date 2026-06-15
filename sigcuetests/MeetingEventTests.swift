@@ -1,5 +1,5 @@
 import XCTest
-@testable import SigCue
+@testable import sigcue
 
 final class MeetingEventTests: XCTestCase {
 

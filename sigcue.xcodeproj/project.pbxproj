@@ -34,7 +34,7 @@
 			containerPortal = E1000002 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = E1000001;
-			remoteInfo = SigCue;
+			remoteInfo = sigcue;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -53,15 +53,15 @@
 		B1000011 /* FocusCountdownWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusCountdownWindow.swift; sourceTree = "<group>"; };
 		B100000A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B100000B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B100000C /* SigCue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SigCue.entitlements; sourceTree = "<group>"; };
-		B100000D /* SigCue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SigCue.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B100000C /* sigcue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = sigcue.entitlements; sourceTree = "<group>"; };
+		B100000D /* sigcue.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sigcue.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		T1000001 /* VideoLinkDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLinkDetectorTests.swift; sourceTree = "<group>"; };
 		T1000002 /* MeetingEventTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingEventTests.swift; sourceTree = "<group>"; };
 		T1000003 /* OverlayBackgroundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayBackgroundTests.swift; sourceTree = "<group>"; };
 		T1000004 /* ClampedExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClampedExtensionTests.swift; sourceTree = "<group>"; };
 		T1000005 /* MeetingMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingMonitorTests.swift; sourceTree = "<group>"; };
 		T1000006 /* MeetingMonitorPreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetingMonitorPreviewTests.swift; sourceTree = "<group>"; };
-		T3000001 /* SigCueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SigCueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		T3000001 /* sigcuetests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sigcuetests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,13 +85,13 @@
 		D1000001 = {
 			isa = PBXGroup;
 			children = (
-				D1000002 /* SigCue */,
-				T4000001 /* SigCueTests */,
+				D1000002 /* sigcue */,
+				T4000001 /* sigcuetests */,
 				D1000006 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		D1000002 /* SigCue */ = {
+		D1000002 /* sigcue */ = {
 			isa = PBXGroup;
 			children = (
 				B1000001 /* SigCueApp.swift */,
@@ -100,9 +100,9 @@
 				D1000005 /* Views */,
 				D1000007 /* Resources */,
 				B100000B /* Info.plist */,
-				B100000C /* SigCue.entitlements */,
+				B100000C /* sigcue.entitlements */,
 			);
-			path = SigCue;
+			path = sigcue;
 			sourceTree = "<group>";
 		};
 		D1000003 /* Models */ = {
@@ -140,8 +140,8 @@
 		D1000006 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B100000D /* SigCue.app */,
-				T3000001 /* SigCueTests.xctest */,
+				B100000D /* sigcue.app */,
+				T3000001 /* sigcuetests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,7 +154,7 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		T4000001 /* SigCueTests */ = {
+		T4000001 /* sigcuetests */ = {
 			isa = PBXGroup;
 			children = (
 				T1000001 /* VideoLinkDetectorTests.swift */,
@@ -164,15 +164,15 @@
 				T1000005 /* MeetingMonitorTests.swift */,
 				T1000006 /* MeetingMonitorPreviewTests.swift */,
 			);
-			path = SigCueTests;
+			path = sigcuetests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E1000001 /* SigCue */ = {
+		E1000001 /* sigcue */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F1000003 /* Build configuration list for PBXNativeTarget "SigCue" */;
+			buildConfigurationList = F1000003 /* Build configuration list for PBXNativeTarget "sigcue" */;
 			buildPhases = (
 				C1000002 /* Sources */,
 				C1000001 /* Frameworks */,
@@ -182,14 +182,14 @@
 			);
 			dependencies = (
 			);
-			name = SigCue;
-			productName = SigCue;
-			productReference = B100000D /* SigCue.app */;
+			name = sigcue;
+			productName = sigcue;
+			productReference = B100000D /* sigcue.app */;
 			productType = "com.apple.product-type.application";
 		};
-		T6000001 /* SigCueTests */ = {
+		T6000001 /* sigcuetests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = T8000001 /* Build configuration list for PBXNativeTarget "SigCueTests" */;
+			buildConfigurationList = T8000001 /* Build configuration list for PBXNativeTarget "sigcuetests" */;
 			buildPhases = (
 				T5000002 /* Sources */,
 				T5000001 /* Frameworks */,
@@ -199,9 +199,9 @@
 			dependencies = (
 				T9000002 /* PBXTargetDependency */,
 			);
-			name = SigCueTests;
-			productName = SigCueTests;
-			productReference = T3000001 /* SigCueTests.xctest */;
+			name = sigcuetests;
+			productName = sigcuetests;
+			productReference = T3000001 /* sigcuetests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -214,7 +214,7 @@
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 2620;
 			};
-			buildConfigurationList = F1000001 /* Build configuration list for PBXProject "SigCue" */;
+			buildConfigurationList = F1000001 /* Build configuration list for PBXProject "sigcue" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -227,8 +227,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E1000001 /* SigCue */,
-				T6000001 /* SigCueTests */,
+				E1000001 /* sigcue */,
+				T6000001 /* sigcuetests */,
 			);
 		};
 /* End PBXProject section */
@@ -282,7 +282,7 @@
 /* Begin PBXTargetDependency section */
 		T9000002 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E1000001 /* SigCue */;
+			target = E1000001 /* sigcue */;
 			targetProxy = T9000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -393,7 +393,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = SigCue/SigCue.entitlements;
+				CODE_SIGN_ENTITLEMENTS = sigcue/sigcue.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -401,7 +401,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = SigCue/Info.plist;
+				INFOPLIST_FILE = sigcue/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -418,7 +418,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = SigCue/SigCue.entitlements;
+				CODE_SIGN_ENTITLEMENTS = sigcue/sigcue.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -426,7 +426,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = SigCue/Info.plist;
+				INFOPLIST_FILE = sigcue/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -452,7 +452,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SigCue.app/Contents/MacOS/SigCue";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sigcue.app/Contents/MacOS/sigcue";
 			};
 			name = Debug;
 		};
@@ -469,14 +469,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SigCue.app/Contents/MacOS/SigCue";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sigcue.app/Contents/MacOS/sigcue";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F1000001 /* Build configuration list for PBXProject "SigCue" */ = {
+		F1000001 /* Build configuration list for PBXProject "sigcue" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F1000004 /* Debug */,
@@ -485,7 +485,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F1000003 /* Build configuration list for PBXNativeTarget "SigCue" */ = {
+		F1000003 /* Build configuration list for PBXNativeTarget "sigcue" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F1000006 /* Debug */,
@@ -494,7 +494,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		T8000001 /* Build configuration list for PBXNativeTarget "SigCueTests" */ = {
+		T8000001 /* Build configuration list for PBXNativeTarget "sigcuetests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				T7000001 /* Debug */,
