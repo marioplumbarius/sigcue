@@ -11,6 +11,16 @@ Unlike traditional apps that bury notifications inside passive trays, `sigcue` r
 |The Passive Salience Anchor (Floating Countdown)|A zero-overhead, terminal-style widget that floats permanently above all active workspaces—including native full-screen IDEs and browsers. It tracks your next high-priority event, dynamically shifting colors (Blue → Amber → Red) as the deadline nears to anchor your perception of time.|
 |The Active System Interrupt (Forced Screen Takeover)|When an event is imminent, `sigcue` triggers a native `NSPanel` screen override. It dims your active workspace to gracefully break hyperfocus and blocks input until you explicitly choose a path: **Action Now** (instantly launches the relevant app or URL with zero friction), **Snooze** (strictly capped at 2 max), or **Dismiss** (requires an intentional confirmation hold to prevent impulsive bypassing).|
 
+## Local Development
+
+Build and run locally:
+
+```bash
+make dev
+```
+
+This builds the Debug variant and installs it to `/Applications/sigcue.app`. See the [Makefile](Makefile) for other targets (`make help` shows all available commands).
+
 ## The Science Behind It
 
 ### Working Memory Deficit
