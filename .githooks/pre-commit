@@ -3,12 +3,16 @@ set -e
 
 echo "Running pre-commit checks..."
 
-# Run linter
+# Run linter (non-blocking, like in CI)
 echo "▪ Linting..."
-make lint || { echo "✗ Lint failed"; exit 1; }
+make lint || echo "⚠ Lint warnings (non-blocking)"
 
-# Run tests
+# Run tests (blocking)
 echo "▪ Testing..."
 make test || { echo "✗ Tests failed"; exit 1; }
+
+# Build to ensure code compiles (blocking)
+echo "▪ Building..."
+make build || { echo "✗ Build failed"; exit 1; }
 
 echo "✓ Pre-commit checks passed"
