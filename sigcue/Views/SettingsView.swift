@@ -13,7 +13,7 @@ struct SettingsView: View {
     @AppStorage(WorkingHoursEvents.daysKey) private var workingHoursDaysMask: Int = WorkingHoursEvents.defaultDaysMask
     @AppStorage(FocusCountdownCoordinator.enabledKey) private var focusCountdownEnabled: Bool = false
     @AppStorage(FocusCountdownLayout.storageKey) private var focusCountdownLayout: String = FocusCountdownLayout.defaultLayout.rawValue
-    @AppStorage("focusCountdownOpacity") private var focusCountdownOpacity: Double = 1.0
+    @AppStorage("focusCountdownOpacity") private var focusCountdownOpacity: Double = 0.2
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 

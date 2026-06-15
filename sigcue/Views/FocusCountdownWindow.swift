@@ -174,7 +174,7 @@ struct FocusCountdownView: View {
     @AppStorage(FocusCountdownLayout.storageKey)
     private var layoutRaw: String = FocusCountdownLayout.defaultLayout.rawValue
     @AppStorage("focusCountdownOpacity")
-    private var baseOpacity: Double = 1.0
+    private var baseOpacity: Double = 0.2
 
     private var layout: FocusCountdownLayout {
         FocusCountdownLayout(rawValue: layoutRaw) ?? .modern
