@@ -15,12 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run SwiftLint
-        run: |
-          if ! command -v swiftlint &> /dev/null; then
-            brew install swiftlint
-          fi
-          swiftlint
+      - name: Run linter
+        run: make lint
         continue-on-error: true
 
   test:
@@ -83,13 +79,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: sigcue-release
+          path: build/Release
 
-      - name: Prepare assets
-        run: |
-          mkdir -p release-assets
-          find . -name "sigcue.app" -type d | head -1 | xargs -I {} cp -R {} release-assets/
-          cd release-assets
-          zip -r ../sigcue.zip sigcue.app
+      - name: Package release
+        run: make package
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1

@@ -95,3 +95,24 @@ uninstall:
 	else \
 		echo "$(APP_NAME) not found in $(APPS_DIR)"; \
 	fi
+
+# Run code style checks with SwiftLint
+lint:
+	@echo "Running SwiftLint..."
+	@if ! command -v swiftlint &> /dev/null; then \
+		brew install swiftlint; \
+	fi
+	swiftlint
+
+# Package the Release build into a distributable zip file
+package: build-release
+	@echo "Packaging $(APP_NAME)..."
+	@mkdir -p release-assets
+	@APP_PATH=$$(find $(BUILD_DIR) -name "$(APP_NAME)" -type d | head -1); \
+	if [ -z "$$APP_PATH" ]; then \
+		echo "Error: Failed to find built app"; \
+		exit 1; \
+	fi; \
+	cp -R "$$APP_PATH" release-assets/
+	@cd release-assets && zip -r ../sigcue.zip sigcue.app
+	@echo "✓ Package created: sigcue.zip"
