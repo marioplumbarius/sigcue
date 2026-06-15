@@ -19,10 +19,12 @@ final class FocusCountdownService: ObservableObject {
     @Published private(set) var initialRemaining: TimeInterval = 0
     @Published private(set) var urgencyColor: UrgencyColor = .green
     @Published private(set) var currentOpacity: Double = 1.0
+    @Published private(set) var breathingPhase: Double = 0
 
     private let calendarService: any CalendarServiceProtocol
     private var timer: Timer?
     private var trackedKey: String?
+    private var startTime: Date = Date()
 
     init(calendarService: any CalendarServiceProtocol) {
         self.calendarService = calendarService
@@ -35,8 +37,9 @@ final class FocusCountdownService: ObservableObject {
     }
 
     func start() {
+        startTime = Date()
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
         tick()
@@ -97,6 +100,7 @@ final class FocusCountdownService: ObservableObject {
         guard let target = nextEvent else {
             urgencyColor = .green
             currentOpacity = 1.0
+            breathingPhase = 0
             return
         }
 
@@ -106,7 +110,8 @@ final class FocusCountdownService: ObservableObject {
         let minutesUntil = timeUntilTarget / 60
 
         // Color transitions: green → yellow at 10 min, yellow → red at 5 min
-        if minutesUntil <= 5 {
+        let isRed = minutesUntil <= 5
+        if isRed {
             urgencyColor = .red
         } else if minutesUntil <= 10 {
             urgencyColor = .yellow
@@ -125,6 +130,18 @@ final class FocusCountdownService: ObservableObject {
             // For upcoming meetings, fade in based on minutes until start
             let fadeStartMinutes = max(notificationMinutes, 1)
             currentOpacity = max(0.2, min(1.0, minutesUntil / fadeStartMinutes))
+        }
+
+        // Calculate breathing effect when red
+        if isRed {
+            let breathingSpeed = Double(UserDefaults.standard.integer(forKey: "breathingSpeed"))
+            let speedValue = breathingSpeed > 0 ? breathingSpeed : 1.0
+            let elapsed = now.timeIntervalSince(startTime)
+            let cycleDuration = 60.0 / speedValue // Convert BPM to seconds per breath
+            let cyclePosition = elapsed.truncatingRemainder(dividingBy: cycleDuration) / cycleDuration
+            breathingPhase = sin(cyclePosition * .pi * 2) * 0.5 + 0.5
+        } else {
+            breathingPhase = 0
         }
     }
 }

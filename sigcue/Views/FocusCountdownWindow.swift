@@ -191,8 +191,14 @@ struct FocusCountdownView: View {
             subtitle = "No meetings"
         }
 
-        let opacity = baseOpacity * service.currentOpacity
+        var opacity = baseOpacity * service.currentOpacity
         let color = service.urgencyColor
+
+        // Apply breathing effect when red
+        if color == .red {
+            let breathingIntensity = 0.5
+            opacity = opacity * (1 - breathingIntensity + service.breathingPhase * breathingIntensity)
+        }
 
         return Group {
             switch layout {

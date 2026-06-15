@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage(FocusCountdownCoordinator.enabledKey) private var focusCountdownEnabled: Bool = false
     @AppStorage(FocusCountdownLayout.storageKey) private var focusCountdownLayout: String = FocusCountdownLayout.defaultLayout.rawValue
     @AppStorage("focusCountdownOpacity") private var focusCountdownOpacity: Double = 0.2
+    @AppStorage("breathingSpeed") private var breathingSpeed: Int = 60
     @ObservedObject var calendarService: CalendarService
     @ObservedObject var meetingMonitor: MeetingMonitor
 
@@ -240,6 +241,27 @@ struct SettingsView: View {
             .disabled(!focusCountdownEnabled)
 
             Text("The countdown becomes more transparent as you approach the meeting, based on your notification threshold.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
+            Text("Red Alert Breathing")
+                .font(.headline)
+
+            HStack(spacing: 12) {
+                Slider(value: Binding(
+                    get: { Double(breathingSpeed) },
+                    set: { breathingSpeed = Int($0) }
+                ), in: 30...120, step: 10)
+                Text("\(breathingSpeed) BPM")
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(.secondary)
+                    .frame(width: 60)
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Text("When the countdown turns red (≤5 min), it pulses at this breathing rate to signal urgency.")
                 .font(.caption)
                 .foregroundColor(.secondary)
 
