@@ -53,7 +53,6 @@ struct SettingsView: View {
                     Label("Calendars", systemImage: "calendar")
                 }
         }
-        .frame(width: 460, height: 420)
         .onAppear {
             loadSettings()
         }
