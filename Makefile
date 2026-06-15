@@ -1,4 +1,4 @@
-.PHONY: build install clean test help dev release uninstall lint package setup-git-hooks
+.PHONY: build install clean test help dev release uninstall lint package setup-git-hooks open
 
 SCHEME := sigcue
 PROJECT := sigcue.xcodeproj
@@ -94,6 +94,15 @@ uninstall:
 		echo "✓ Uninstalled"; \
 	else \
 		echo "$(APP_NAME) not found in $(APPS_DIR)"; \
+	fi
+
+# Launch the installed app
+open:
+	@if [ -d "$(INSTALLED_APP)" ]; then \
+		open "$(INSTALLED_APP)"; \
+	else \
+		echo "Error: $(APP_NAME) not found in $(APPS_DIR)"; \
+		exit 1; \
 	fi
 
 # Uses SwiftLint for style enforcement; auto-installs via Homebrew if missing
