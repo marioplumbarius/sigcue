@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, "claude-*" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-latest
+    name: Test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run tests
+        run: make test
+
+  build-debug:
+    runs-on: macos-latest
+    name: Build (Debug)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Debug
+        run: make build
+
+      - name: Upload Debug Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: sigcue-debug
+          path: build/**/Debug/sigcue.app
+          if-no-files-found: warn
+          retention-days: 5
+
+  build-release:
+    runs-on: macos-latest
+    name: Build (Release)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Release
+        run: make build-release
+
+      - name: Upload Release Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: sigcue-release
+          path: build/**/Release/sigcue.app
+          if-no-files-found: warn
+          retention-days: 5
