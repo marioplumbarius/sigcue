@@ -151,19 +151,6 @@ final class MeetingMonitor: ObservableObject {
         showPreviewOverlay(with: event, skipStartReminder: true)
     }
 
-    func previewStartingRequired() {
-        let now = Date()
-        let event = MeetingEvent(
-            id: "preview-req-\(now.timeIntervalSince1970)",
-            title: "1:1 Sync",
-            startDate: now.addingTimeInterval(-28 * 60),
-            endDate: now.addingTimeInterval(2 * 60),
-            calendar: "Work",
-            videoLink: URL(string: "https://zoom.us/j/12345678901")
-        )
-        showPreviewOverlay(with: event, skipStartReminder: true)
-    }
-
     private func showPreviewOverlay(with event: MeetingEvent, skipStartReminder: Bool = false) {
         class PreviewCalendarService: CalendarServiceProtocol {
             let events: [MeetingEvent]

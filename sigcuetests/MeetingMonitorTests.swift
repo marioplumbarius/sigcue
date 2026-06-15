@@ -258,14 +258,6 @@ final class MeetingMonitorTests: XCTestCase {
         XCTAssertEqual(monitor.activeOverlayEvent?.title, "Sprint Planning")
     }
 
-    func testPreviewStartingRequiredTriggersEndingOverlay() {
-        let monitor = makeMonitor(events: [])
-        monitor.previewStartingRequired()
-        XCTAssertTrue(monitor.shouldShowOverlay, "Requires Action should trigger overlay")
-        XCTAssertEqual(monitor.activeOverlayKind, .ending, "Should show ending overlay for requireAction preview")
-        XCTAssertEqual(monitor.activeOverlayEvent?.title, "1:1 Sync")
-    }
-
     // MARK: - Require Action Feature Tests
 
     func testRequireActionAppStorageKey() {

@@ -128,17 +128,6 @@ struct SettingsView: View {
                 } label: {
                     Label("Ended", systemImage: "checkmark.circle.fill")
                 }
-
-                Button {
-                    UserDefaults.standard.set(true, forKey: "requireAction")
-                    meetingMonitor.previewStartingRequired()
-                    // Reset after a brief delay to show the overlay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        UserDefaults.standard.set(false, forKey: "requireAction")
-                    }
-                } label: {
-                    Label("Requires Action", systemImage: "exclamationmark.circle.fill")
-                }
             }
 
             Section {
