@@ -8,7 +8,6 @@ struct OverlayView: View {
     let onJoin: () -> Void
 
     @AppStorage("overlayBackground") private var overlayBackground: String = "dark"
-    @AppStorage("requireAction") private var requireAction: Bool = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
     @State private var countdown: String = ""
@@ -219,6 +218,15 @@ struct OverlayView: View {
             // Offer the full configured snooze list, just like the start overlay.
             // The monitor caps any snooze that would run past the meeting's end.
             availableSnoozeOptions = snoozeOptions
+        }
+    }
+
+    private var requireAction: Bool {
+        switch kind {
+        case .start:
+            return event.startDate.timeIntervalSinceNow <= 0
+        case .ending:
+            return hasEnded
         }
     }
 
