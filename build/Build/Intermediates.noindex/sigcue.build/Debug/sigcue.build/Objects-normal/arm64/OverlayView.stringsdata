@@ -1,0 +1,32 @@
+{
+  "source": "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcue/Views/OverlayView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Join %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "Snooze %lld min",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Snooze",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 105
+        }
+      }
+    ]
+  },
+  "version": 1
+}

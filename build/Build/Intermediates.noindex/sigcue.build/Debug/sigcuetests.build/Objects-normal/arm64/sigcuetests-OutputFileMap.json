@@ -1,0 +1,69 @@
+{
+  "" : {
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/sigcuetests-primary.dia",
+    "emit-module-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/sigcuetests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/sigcuetests-primary-emit-module.dia",
+    "pch" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/sigcuetests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/sigcuetests-primary.swiftdeps"
+  },
+  "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcuetests/ClampedExtensionTests.swift" : {
+    "const-values" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.swiftconstvalues",
+    "dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.d",
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.dia",
+    "index-unit-output-path" : "/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.o",
+    "llvm-bc" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.bc",
+    "object" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.o",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests.swiftdeps",
+    "swiftmodule" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/ClampedExtensionTests~partial.swiftmodule"
+  },
+  "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcuetests/MeetingEventTests.swift" : {
+    "const-values" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.swiftconstvalues",
+    "dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.d",
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.dia",
+    "index-unit-output-path" : "/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.o",
+    "llvm-bc" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.bc",
+    "object" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.o",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests.swiftdeps",
+    "swiftmodule" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingEventTests~partial.swiftmodule"
+  },
+  "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcuetests/MeetingMonitorPreviewTests.swift" : {
+    "const-values" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.swiftconstvalues",
+    "dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.d",
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.dia",
+    "index-unit-output-path" : "/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.o",
+    "llvm-bc" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.bc",
+    "object" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.o",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests.swiftdeps",
+    "swiftmodule" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorPreviewTests~partial.swiftmodule"
+  },
+  "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcuetests/MeetingMonitorTests.swift" : {
+    "const-values" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.swiftconstvalues",
+    "dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.d",
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.dia",
+    "index-unit-output-path" : "/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.o",
+    "llvm-bc" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.bc",
+    "object" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.o",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests.swiftdeps",
+    "swiftmodule" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/MeetingMonitorTests~partial.swiftmodule"
+  },
+  "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcuetests/OverlayBackgroundTests.swift" : {
+    "const-values" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.swiftconstvalues",
+    "dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.d",
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.dia",
+    "index-unit-output-path" : "/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.o",
+    "llvm-bc" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.bc",
+    "object" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.o",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests.swiftdeps",
+    "swiftmodule" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/OverlayBackgroundTests~partial.swiftmodule"
+  },
+  "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/sigcuetests/VideoLinkDetectorTests.swift" : {
+    "const-values" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.swiftconstvalues",
+    "dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.d",
+    "diagnostics" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.dia",
+    "index-unit-output-path" : "/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.o",
+    "llvm-bc" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.bc",
+    "object" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.o",
+    "swift-dependencies" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests.swiftdeps",
+    "swiftmodule" : "/Users/mario/code/marioplumbarius/sigcue/.claude/worktrees/happy-elbakyan-56f7d6/build/Build/Intermediates.noindex/sigcue.build/Debug/sigcuetests.build/Objects-normal/arm64/VideoLinkDetectorTests~partial.swiftmodule"
+  }
+}

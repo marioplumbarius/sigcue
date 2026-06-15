@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'sigcuetests' in project 'sigcue'
+➜ Explicit dependency on target 'sigcue' in project 'sigcue'
+Target 'sigcue' in project 'sigcue' (no dependencies)

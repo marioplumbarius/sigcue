@@ -22,10 +22,10 @@ _setup_hooks := $(shell git config core.hooksPath >/dev/null 2>&1 || git config 
 # INCLUDES
 # ============================================================================
 
-include Makefile.build
-include Makefile.dev
-include Makefile.test
-include Makefile.clean
+include makefiles/build.mk
+include makefiles/dev.mk
+include makefiles/test.mk
+include makefiles/clean.mk
 
 # ============================================================================
 # HELP
