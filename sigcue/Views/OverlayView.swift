@@ -88,63 +88,56 @@ struct OverlayView: View {
                         .keyboardShortcut(.return, modifiers: [])
                     }
 
-                    if showSnoozeMenu && event.videoLink != nil {
-                        Menu {
-                            Section("Join in...") {
+                    if showSnoozeMenu {
+                        if kind == .start && event.videoLink != nil {
+                            Menu {
                                 ForEach([1, 2, 5, 10], id: \.self) { minutes in
                                     Button("Join in \(minutes) min") {
                                         onSnooze(minutes)
                                     }
                                 }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "arrow.right.circle")
+                                    Text("Join In...")
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.system(size: 11, weight: .medium))
+                                }
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 14)
+                                .background(snoozeButtonColor)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             }
-                            Section("Snooze") {
+                            .menuStyle(.borderlessButton)
+                            .fixedSize()
+                            .buttonStyle(OverlayButtonStyle())
+                        } else if kind == .ending {
+                            Menu {
                                 ForEach(availableSnoozeOptions, id: \.self) { minutes in
                                     Button(snoozeLabel(minutes: minutes)) {
                                         onSnooze(minutes)
                                     }
                                 }
-                            }
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "arrow.right.circle")
-                                Text("Join In...")
-                                Image(systemName: "chevron.up.chevron.down")
-                                    .font(.system(size: 11, weight: .medium))
-                            }
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 14)
-                            .background(snoozeButtonColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        }
-                        .menuStyle(.borderlessButton)
-                        .fixedSize()
-                        .buttonStyle(OverlayButtonStyle())
-                    } else if showSnoozeMenu {
-                        Menu {
-                            ForEach(availableSnoozeOptions, id: \.self) { minutes in
-                                Button(snoozeLabel(minutes: minutes)) {
-                                    onSnooze(minutes)
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "clock.arrow.circlepath")
+                                    Text("Snooze")
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.system(size: 11, weight: .medium))
                                 }
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 24)
+                                .padding(.vertical, 14)
+                                .background(snoozeButtonColor)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             }
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "clock.arrow.circlepath")
-                                Text("Snooze")
-                                Image(systemName: "chevron.up.chevron.down")
-                                    .font(.system(size: 11, weight: .medium))
-                            }
-                            .font(.system(size: 18, weight: .medium))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 14)
-                            .background(snoozeButtonColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .menuStyle(.borderlessButton)
+                            .fixedSize()
+                            .buttonStyle(OverlayButtonStyle())
                         }
-                        .menuStyle(.borderlessButton)
-                        .fixedSize()
-                        .buttonStyle(OverlayButtonStyle())
                     }
 
 
