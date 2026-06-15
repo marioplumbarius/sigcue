@@ -33,6 +33,10 @@ help:
 	@echo "  CONFIG=Release  Use Release configuration (default: Debug)"
 	@echo ""
 
+# ============================================================================
+# BUILD TARGETS
+# ============================================================================
+
 build:
 	@echo "Building $(SCHEME) [$(CONFIG)]..."
 	xcodebuild \
@@ -45,14 +49,6 @@ build:
 # Builds Release variant; explicitly depends on build target
 build-release: CONFIG := Release
 build-release: build
-
-test:
-	@echo "Running tests..."
-	xcodebuild \
-		-project $(PROJECT) \
-		-scheme $(SCHEME) \
-		-derivedDataPath $(BUILD_DIR) \
-		test
 
 # Removes existing installation to prevent conflicts; locates built app via find to handle derivedData path variance
 install: build
@@ -71,13 +67,68 @@ install: build
 	@echo "✓ Installation complete"
 	@echo "  Run with: open $(INSTALLED_APP)"
 
-# Common shortcut for local development; explicitly depends on install target
+# Only packages Release builds (Debug is for local development, not distribution)
+package: build-release
+	@echo "Packaging $(APP_NAME)..."
+	@mkdir -p release-assets
+	@APP_PATH=$$(find $(BUILD_DIR) -name "$(APP_NAME)" -type d | head -1); \
+	if [ -z "$$APP_PATH" ]; then \
+		echo "Error: Failed to find built app"; \
+		exit 1; \
+	fi; \
+	cp -R "$$APP_PATH" release-assets/
+	@cd release-assets && zip -r ../sigcue.zip sigcue.app
+	@echo "✓ Package created: sigcue.zip"
+
+# ============================================================================
+# CONVENIENCE SHORTCUTS FOR LOCAL DEVELOPMENT
+# ============================================================================
+
+# Debug variant: fast iteration during development; includes debug symbols and skips optimizations
 dev: CONFIG := Debug
 dev: install
 
-# Common shortcut for distribution/testing Release builds locally; explicitly depends on install target
+# Release variant: optimized build for distribution testing and performance validation before shipping
 release: CONFIG := Release
 release: install
+
+# Launch the installed app
+open:
+	@if [ -d "$(INSTALLED_APP)" ]; then \
+		open "$(INSTALLED_APP)"; \
+	else \
+		echo "Error: $(APP_NAME) not found in $(APPS_DIR)"; \
+		exit 1; \
+	fi
+
+# ============================================================================
+# DEVELOPMENT TOOLS
+# ============================================================================
+
+test:
+	@echo "Running tests..."
+	xcodebuild \
+		-project $(PROJECT) \
+		-scheme $(SCHEME) \
+		-derivedDataPath $(BUILD_DIR) \
+		test
+
+# Uses SwiftLint for style enforcement; auto-installs via Homebrew if missing
+lint:
+	@echo "Running SwiftLint..."
+	@if ! command -v swiftlint &> /dev/null; then \
+		brew install swiftlint; \
+	fi
+	swiftlint
+
+# Auto-invoked on first Makefile call; stores hook path in git config so developers don't need manual setup
+setup-git-hooks:
+	@git config core.hooksPath .githooks
+	@echo "✓ Git hooks configured"
+
+# ============================================================================
+# CLEANUP
+# ============================================================================
 
 # Cleans both build artifacts and Xcode's derived data cache; derived data can cause stale rebuilds
 clean:
@@ -95,38 +146,3 @@ uninstall:
 	else \
 		echo "$(APP_NAME) not found in $(APPS_DIR)"; \
 	fi
-
-# Launch the installed app
-open:
-	@if [ -d "$(INSTALLED_APP)" ]; then \
-		open "$(INSTALLED_APP)"; \
-	else \
-		echo "Error: $(APP_NAME) not found in $(APPS_DIR)"; \
-		exit 1; \
-	fi
-
-# Uses SwiftLint for style enforcement; auto-installs via Homebrew if missing
-lint:
-	@echo "Running SwiftLint..."
-	@if ! command -v swiftlint &> /dev/null; then \
-		brew install swiftlint; \
-	fi
-	swiftlint
-
-# Auto-invoked on first Makefile call; stores hook path in git config so developers don't need manual setup
-setup-git-hooks:
-	@git config core.hooksPath .githooks
-	@echo "✓ Git hooks configured"
-
-# Only packages Release builds (Debug is for local development, not distribution)
-package: build-release
-	@echo "Packaging $(APP_NAME)..."
-	@mkdir -p release-assets
-	@APP_PATH=$$(find $(BUILD_DIR) -name "$(APP_NAME)" -type d | head -1); \
-	if [ -z "$$APP_PATH" ]; then \
-		echo "Error: Failed to find built app"; \
-		exit 1; \
-	fi; \
-	cp -R "$$APP_PATH" release-assets/
-	@cd release-assets && zip -r ../sigcue.zip sigcue.app
-	@echo "✓ Package created: sigcue.zip"
