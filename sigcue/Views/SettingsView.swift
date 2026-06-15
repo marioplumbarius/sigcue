@@ -21,8 +21,10 @@ struct SettingsView: View {
     @State private var launchAtLogin = false
     @State private var enabledCalendarIDs: Set<String> = []
     @State private var snoozeOptions: Set<Int> = [1, 2, 5, 10]
+    @State private var joinOptions: Set<Int> = [1, 2, 5, 10]
 
     private let snoozeOptionCandidates = [1, 2, 5, 10, 15]
+    private let joinOptionCandidates = [1, 2, 5, 10]
 
     var body: some View {
         TabView {
@@ -267,6 +269,22 @@ struct SettingsView: View {
 
             Divider()
 
+            Text("Join Options")
+                .font(.headline)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(joinOptionCandidates, id: \.self) { minutes in
+                    Toggle(joinLabel(minutes: minutes), isOn: joinBinding(for: minutes))
+                }
+            }
+            .disabled(!focusCountdownEnabled)
+
+            Text("Quick options shown in 'Join In...' menu when starting a meeting.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Divider()
+
             Text("Layout")
                 .font(.headline)
 
@@ -385,6 +403,7 @@ struct SettingsView: View {
         }
 
         loadSnoozeOptions()
+        loadJoinOptions()
     }
 
     private func loadSnoozeOptions() {
@@ -394,6 +413,15 @@ struct SettingsView: View {
 
     private func saveSnoozeOptions() {
         UserDefaults.standard.set(Array(snoozeOptions).sorted(), forKey: "snoozeOptions")
+    }
+
+    private func loadJoinOptions() {
+        let stored = UserDefaults.standard.array(forKey: "joinOptions") as? [Int] ?? []
+        joinOptions = stored.isEmpty ? [1, 2, 5, 10] : Set(stored)
+    }
+
+    private func saveJoinOptions() {
+        UserDefaults.standard.set(Array(joinOptions).sorted(), forKey: "joinOptions")
     }
 
     private func snoozeBinding(for minutes: Int) -> Binding<Bool> {
@@ -413,6 +441,25 @@ struct SettingsView: View {
 
     private func snoozeLabel(minutes: Int) -> String {
         minutes == 1 ? "1 minute" : "\(minutes) minutes"
+    }
+
+    private func joinBinding(for minutes: Int) -> Binding<Bool> {
+        Binding(
+            get: { joinOptions.contains(minutes) },
+            set: { enabled in
+                if enabled {
+                    joinOptions.insert(minutes)
+                } else {
+                    guard joinOptions.count > 1 else { return }
+                    joinOptions.remove(minutes)
+                }
+                saveJoinOptions()
+            }
+        )
+    }
+
+    private func joinLabel(minutes: Int) -> String {
+        minutes == 1 ? "Join in 1 min" : "Join in \(minutes) min"
     }
 
     private var orderedWeekdayIndices: [Int] {

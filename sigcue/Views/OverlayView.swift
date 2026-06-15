@@ -90,8 +90,9 @@ struct OverlayView: View {
 
                     if showSnoozeMenu {
                         if kind == .start && event.videoLink != nil {
+                            let joinOptions = getJoinOptions()
                             Menu {
-                                ForEach([1, 2, 5, 10], id: \.self) { minutes in
+                                ForEach(joinOptions.sorted(), id: \.self) { minutes in
                                     Button("Join in \(minutes) min") {
                                         onSnooze(minutes)
                                     }
@@ -348,6 +349,11 @@ struct OverlayView: View {
                 }
             }
         }
+    }
+
+    private func getJoinOptions() -> [Int] {
+        let stored = UserDefaults.standard.array(forKey: "joinOptions") as? [Int] ?? []
+        return stored.isEmpty ? [1, 2, 5, 10] : stored
     }
 }
 
