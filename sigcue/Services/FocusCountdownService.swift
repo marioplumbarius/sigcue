@@ -65,6 +65,15 @@ final class FocusCountdownService: ObservableObject {
         hasAutoJoined = false
     }
 
+    func joinNow() {
+        guard let event = nextEvent, event.videoLink != nil else { return }
+        hasAutoJoined = true
+        NotificationCenter.default.post(
+            name: .focusCountdownAutoJoin,
+            object: event
+        )
+    }
+
     private func tick() {
         let now = Date()
         let allEvents = calendarService.events
