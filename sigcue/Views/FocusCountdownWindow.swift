@@ -236,33 +236,16 @@ struct FocusCountdownView: View {
     }
 
     private var autoJoinButton: some View {
-        Menu {
-            if service.autoJoinTime != nil {
-                Button("Cancel Auto-Join", systemImage: "xmark.circle") {
-                    service.cancelAutoJoin()
-                }
-            } else {
-                ForEach([1, 2, 5, 10], id: \.self) { minutes in
-                    Button("Auto-join in \(minutes) min") {
-                        service.setAutoJoin(inMinutes: minutes)
-                    }
-                }
-            }
+        Button {
+            service.joinNow()
         } label: {
-            if service.autoJoinTime != nil {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 18))
-                    .foregroundColor(.green)
-                    .padding(8)
-            } else {
-                Image(systemName: "arrow.right.circle")
-                    .font(.system(size: 18))
-                    .foregroundColor(.secondary)
-                    .padding(8)
-            }
+            Image(systemName: "arrow.right.circle.fill")
+                .font(.system(size: 18))
+                .foregroundColor(.accentColor)
+                .padding(8)
         }
-        .menuStyle(.borderlessButton)
-        .fixedSize()
+        .buttonStyle(.borderless)
+        .help("Join meeting now")
     }
 
     static func formatted(_ seconds: TimeInterval) -> String {
